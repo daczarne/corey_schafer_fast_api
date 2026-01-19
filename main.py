@@ -1,9 +1,11 @@
 from fastapi import FastAPI, Request
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.templating import _TemplateResponse
 
 
 app: FastAPI = FastAPI()
+app.mount(path = "/static", app = StaticFiles(directory = "static"), name = "static")
 
 templates = Jinja2Templates(directory = "templates")
 
@@ -26,8 +28,8 @@ posts: list[dict] = [
 ]
 
 
-@app.get(path = "/", include_in_schema = False)
-@app.get(path = "/posts", include_in_schema = False)
+@app.get(path = "/", include_in_schema = False, name = "home")
+@app.get(path = "/posts", include_in_schema = False, name = "posts")
 def home(request: Request) -> _TemplateResponse:
     return templates.TemplateResponse(
         request = request,

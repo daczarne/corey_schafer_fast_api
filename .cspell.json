@@ -17,6 +17,11 @@
             "addWords": true,
         },
         {
+            "name": "html",
+            "path": "./.cspell/html.txt",
+            "addWords": true,
+        },
+        {
             "name": "python_extras",
             "path": "./.cspell/python_extras.txt",
             "addWords": true,
@@ -29,6 +34,7 @@
     ],
     "dictionaries": [
         "git",
+        "html",
         "python_extras",
         "python",
         "vs_code",
