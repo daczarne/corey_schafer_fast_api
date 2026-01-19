@@ -34,7 +34,11 @@
         "vs_code",
     ],
     "words": [ ],
-    "ignoreWords": [ ],
+    "ignoreWords": [
+        "corey",
+        "schafer",
+        "Schafer's",
+    ],
     "overrides": [
         {
             "filename": "**/*.py",

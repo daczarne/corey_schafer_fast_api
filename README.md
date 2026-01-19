@@ -1,7 +1,8 @@
-# Python projects
+# Corey Schafer's fastAPI tutorial
 
-This template creates a basic repository for Python projects. It includes Python version 3.13.3, `pytest`, and some
-basic linters and editor configurations. For a detailed explanation on how to setup the local environment see the
-[setup guide][1].
+This is a code-along repository for Corey Schafer's fastAPI tutorial series. The videos can be found in the following
+links:
 
-[1]: docs/local_setup/README.md
+1. [Getting started][getting-started]
+
+[getting-started]: https://www.youtube.com/watch?v=7AMjmCTumuo
