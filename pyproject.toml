@@ -205,9 +205,9 @@ select = [
     "TD005", # Checks that a "TODO" tag contains a description of the issue following the tag itself.
     "TD006", # Checks that a "TODO" tag is properly capitalized.
     "TD007", # Checks that the colon after a "TODO" tag is followed by a space.
-    "TC001", # Checks for first-party imports that are only used for type annotations, but aren't defined in a type-checking block.
-    "TC002", # Checks for third-party imports that are only used for type annotations, but aren't defined in a type-checking block.
-    "TC003", # Checks for standard library imports that are only used for type annotations, but aren't defined in a type-checking block.
+    # "TC001", #! Disabling this rule because fastAPI does not seem to play along nicely with __future__
+    # "TC002", #! Disabling this rule because fastAPI does not seem to play along nicely with __future__
+    # "TC003", #! Disabling this rule because fastAPI does not seem to play along nicely with __future__
     "TC004", # Checks for imports that are required at runtime but are only defined in type-checking blocks.
     "TC005", # Checks for an empty type-checking block.
     "TC006", # Checks for unquoted type expressions in `typing.cast()` calls.
