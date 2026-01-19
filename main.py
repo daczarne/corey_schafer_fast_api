@@ -34,6 +34,7 @@ def home(request: Request) -> _TemplateResponse:
         name = "home.html",
         context = {
             "posts": posts,
+            "title": "Home",
         },
     )
 
