@@ -1,8 +1,19 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from fastapi import FastAPI
-from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+
+
+if TYPE_CHECKING:
+    from fastapi import Request
+    from starlette.templating import _TemplateResponse
 
 
 app: FastAPI = FastAPI()
+
+templates: Jinja2Templates = Jinja2Templates(directory = "templates")
 
 
 posts: list[dict] = [
@@ -23,10 +34,13 @@ posts: list[dict] = [
 ]
 
 
-@app.get(path = "/", response_class = HTMLResponse, include_in_schema = False)
-@app.get(path = "/posts", response_class = HTMLResponse, include_in_schema = False)
-def home() -> str:
-    return f"<h1>{posts[0]["title"]}</h1>"
+@app.get(path = "/", include_in_schema = False)
+@app.get(path = "/posts", include_in_schema = False)
+def home(request: Request) -> _TemplateResponse:
+    return templates.TemplateResponse(
+        request = request,
+        name = "home.html",
+    )
 
 
 @app.get(path = "/api/posts")
