@@ -1,22 +1,9 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
+{% block content %}
 
-  <head>
-    <title>
-      {% if title %}
-      FastAPI Blog - {{ title }}
-      {% else %}
-      FastAPI Blog
-      {% endif %}
-    </title>
-  </head>
+{% for post in posts %}
+<h2>{{ post.title }}</h2>
+<p>{{ post.content }}</p>
+{% endfor %}
 
-  <body>
-    <h1>Home Page</h1>
-    {% for post in posts %}
-    <h2>{{ post.title }}</h2>
-    <p>{{ post.content }}</p>
-    {% endfor %}
-  </body>
-
-</html>
+{% endblock content %}
