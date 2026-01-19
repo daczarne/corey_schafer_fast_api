@@ -24,6 +24,7 @@ posts: list[dict] = [
 
 
 @app.get(path = "/", response_class = HTMLResponse)
+@app.get(path = "/posts", response_class = HTMLResponse)
 def home() -> str:
     return f"<h1>{posts[0]["title"]}</h1>"
 
