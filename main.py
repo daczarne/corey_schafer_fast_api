@@ -1,19 +1,11 @@
-from __future__ import annotations
-
-from typing import TYPE_CHECKING
-
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
-
-
-if TYPE_CHECKING:
-    from fastapi import Request
-    from starlette.templating import _TemplateResponse
+from starlette.templating import _TemplateResponse
 
 
 app: FastAPI = FastAPI()
 
-templates: Jinja2Templates = Jinja2Templates(directory = "templates")
+templates = Jinja2Templates(directory = "templates")
 
 
 posts: list[dict] = [
@@ -40,6 +32,9 @@ def home(request: Request) -> _TemplateResponse:
     return templates.TemplateResponse(
         request = request,
         name = "home.html",
+        context = {
+            "posts": posts,
+        },
     )
 
 
