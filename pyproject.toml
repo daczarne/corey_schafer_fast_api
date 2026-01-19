@@ -37,7 +37,6 @@ line-ending = "lf"
 # For rules that allow settings/configurations, see the titles after this one.
 # Ruff rules can be found at https://docs.astral.sh/ruff/rules
 select = [
-    # "AIR", #~ Rules for Airflow (need to investigate).
     "ERA001", # Forbids commented out code.
     "YTT", # Rules for use of `sys.version` and `sys.version_info`.
     "ANN001", # Function arguments have type annotations.
@@ -48,7 +47,6 @@ select = [
     "ANN204", # Check dunder methods have annotated return type.
     "ANN205", # Check static methods have annotated return type.
     "ANN206", # Check class methods have annotated return type.
-    # "S", #~ flake8-bandit (need to investigate).
     "FBT003", # Checks for boolean positional arguments in function calls.
     "B002", # Checks for the attempted use of the unary prefix increment (++) or decrement operator (--).
     "B006", # Checks for uses of mutable objects as function argument defaults.
@@ -79,7 +77,6 @@ select = [
     "B033", # Checks for set literals that contain duplicate items.
     "B034", # Checks for calls to `re.sub()`, `re.subn()`, and `re.split()` that pass `count`, `maxsplit`, or `flags` as positional arguments.
     "B035", # Checks for dictionary comprehensions that use a static key.
-    # "B909", # Checks for mutations to an iterable during a loop iteration. #> Enable once preview is over.
     "A001", # Checks for variable (and function) assignments that use the same names as builtins.
     "A002", # Checks for function arguments that use the same names as builtins.
     "A003", # Checks for class attributes and methods that use the same names as Python builtins.
@@ -118,24 +115,18 @@ select = [
     "DTZ012", # Checks for usage of `datetime.date.fromtimestamp()`.
     "DTZ901", # Checks for uses of `datetime.datetime.min` and `datetime.datetime.max`.
     "T100", # Checks for the presence of debugger calls and imports.
-    # "DJ", #~ Django rules (need to investigate).
-    # "EM", #! I disagree with these error-message rules.
     "EXE001", # Checks for a shebang directive in a file that is not executable.
     "EXE002", # Checks for executable `.py` files that do not have a shebang.
     "EXE003", # Checks for a shebang directive in `.py` files that does not contain `python`, `pytest`, or `uv run`.
     "EXE004", # Checks for whitespace before a shebang directive.
     "EXE005", # Checks for a shebang directive that is not at the beginning of the file.
-    # "FIX", #! I disagree with these comment rules.
     "FA", # Rules for `from __future__ import annotations`.
     "INT", # Rules for `gettext` function.
     "ISC001", # Checks for implicitly concatenated strings on a single line.
     "ISC002", # Checks for implicitly concatenated strings that span multiple lines.
     "ISC003", # Checks for string literals that are explicitly concatenated (using the `+` operator).
-    # "ICN", #! I disagree with these import rules.
     "LOG", # Rules for loggers.
     "G", # Rules for logger messages.
-    # "INP001", #! I disagree with this rule of `__init__.py` files.
-    # "PIE790", #! Enabling this rule violates the zen-of-Python: be explicit!
     "PIE794", # Checks for duplicate field definitions in classes.
     "PIE796", # Checks for enums that contain duplicate values.
     "PIE800", # Checks for unnecessary dictionary unpacking operators (`**`).
@@ -143,7 +134,6 @@ select = [
     "PIE807", # Checks for lambdas that can be replaced with the `list` or `dict` builtins.
     "PIE808", # Checks for `range` calls with an unnecessary `start` argument.
     "PIE810", # Checks for `startswith` or `endswith` calls on the same value with different prefixes or suffixes.
-    # "T201", #! I disagree with these printing rules.
     "PYI", # Rules for type hinting stub files. #~ I need to investigate more.
     "PT001", # Checks for argument-free `@pytest.fixture()` decorators with parentheses.
     "PT002", # Checks for `pytest.fixture` calls with positional arguments.
@@ -159,7 +149,6 @@ select = [
     "PT016", # Checks for `pytest.fail` calls without a message.
     "PT017", # Checks for assert statements in except clauses.
     "PT018", # Checks for assertions that combine multiple independent conditions.
-    # "PT019", #! Rule produces false negatives.
     "PT020", # Checks for `pytest.yield_fixture` usage.
     "PT021", # Checks for unnecessary `request.addfinalizer` usages in pytest fixtures.
     "PT022", # Checks for unnecessary yield expressions in pytest fixtures. #~ I'm skeptical of this rule. Need to investigate more.
@@ -169,15 +158,12 @@ select = [
     "PT026", # Checks for `@pytest.mark.usefixtures()` decorators that aren't passed any arguments.
     "PT027", # Checks for uses of exception-related assertion methods from the `unittest` module.
     "PT028", # Checks for parameters of test functions with default arguments.
-    # "PT029", # Checks for `pytest.warns` calls without an expected warning. #> Enable once preview is over.
     "PT030", # Checks for `pytest.warns` calls without a match parameter.
     "PT031", # Checks for `pytest.warns` context managers with multiple statements.
     "Q000", # Checks for inline strings that use single quotes.
     "Q001", # Checks for multiline strings that use single quotes.
     "Q002", # Checks for docstrings that use single quotes.
-    # "Q003", #! Rule does not maintain double quotes as outer ones.
     "Q004", # Checks for strings that include unnecessarily escaped quotes.
-    # "RSE102", #! Rule has known issues and it is not very good.
     "RET501", # Checks for the presence of a `return None` statement when `None` is the only possible return value.
     "RET502", # Checks for the presence of a return statement with no explicit value, for functions that return non-None values elsewhere.
     "RET503", # Checks for missing explicit `return` statements at the end of functions that can return non-None values.
@@ -216,9 +202,6 @@ select = [
     "TID252", # Checks for relative imports.
     "TID253", # Checks for module-level imports that should instead be imported lazily.
     "TD001", # Checks that a TODO comment is labelled with "TODO".
-    # "TD002", # All TODOs have authors. Nice to have, but not always applicable.
-    # "TD003", # All TODOs links to issues. Nice to have, but not always applicable.
-    # "TD004", # All TODOs have colons. #! Nope. I use TODO colorization via a VS Code extension.
     "TD005", # Checks that a "TODO" tag contains a description of the issue following the tag itself.
     "TD006", # Checks that a "TODO" tag is properly capitalized.
     "TD007", # Checks that the colon after a "TODO" tag is followed by a space.
@@ -229,7 +212,6 @@ select = [
     "TC005", # Checks for an empty type-checking block.
     "TC006", # Checks for unquoted type expressions in `typing.cast()` calls.
     "TC007", # Checks if PEP 613 explicit type aliases contain references to symbols that are not available at runtime.
-    # "TC008", # Checks for unnecessary quotes in PEP 613 explicit type aliases and PEP 695 type statements. #> Re-evaluate once preview is over.
     "TC010", # Checks for the presence of string literals in `X | Y`-style union types.
     "ARG001", # Checks for the presence of unused arguments in function definitions.
     "ARG002", # Checks for the presence of unused arguments in instance method definitions.
@@ -269,14 +251,10 @@ select = [
     "PTH206", # Checks for uses of `.split(os.sep)`.
     "PTH207", # Checks for the use of `glob.glob()` and `glob.iglob()`.
     "PTH208", # Checks for uses of `os.listdir`.
-    # "PTH210", # Checks for `pathlib.Path.with_suffix()`. #! Disabling because rule is likely to produce false negatives.
     "PTH211", # Checks for uses of `os.symlink`.
     "FLY002", # Checks for `str.join` calls that can be replaced with f-strings.
     "I001", # De-duplicates, groups, and sorts imports based on the provided `isort` settings.
     "I002", # Adds any required imports to the top of the file. See `tool.ruff.lint.isort.required-imports`.
-    # "C901", #! Disabling because this rule is too subjective and has zero context awareness.
-    # "NPY", # Checks for `numpy`. #~ I need to investigate more.
-    # "PD", # Checks for `pandas`. #~ I need to investigate more.
     "N801", # Checks for class names that do not follow the `CamelCase` convention.
     "N802", # Checks for functions names that do not follow the `snake_case` naming convention.
     "N803", # Checks for argument names that do not follow the `snake_case` convention.
@@ -322,12 +300,7 @@ select = [
     "E231", # Checks for missing whitespace after `,`, `;`, and `:`. #> Requires preview rules to be enabled.
     "E241", # Checks for extraneous whitespace after a comma. #> Requires preview rules to be enabled.
     "E242", # Checks for extraneous tabs after a comma. #> Requires preview rules to be enabled.
-    # "E251", #! I disagree with this rule.
     "E252", # Checks for missing whitespace around the equals sign in an annotated function keyword parameter. #> Requires preview rules to be enabled.
-    # "E261", #! I disagree with this rule.
-    # "E262", #! This rule would conflict with the Better comments extension.
-    # "E265", #! This rule would conflict with the Better comments extension.
-    # "E266", #! This rule would conflict with the Better comments extension.
     "E271", # Checks for extraneous whitespace after keywords. #> Requires preview rules to be enabled.
     "E272", # Checks for extraneous whitespace before keywords. #> Requires preview rules to be enabled.
     "E273", # Checks for extraneous tabs after keywords. #> Requires preview rules to be enabled.
@@ -335,7 +308,6 @@ select = [
     "E275", # Checks for missing whitespace after keywords. #> Requires preview rules to be enabled.
     "E301", # Checks for missing blank lines between methods of a class. #> Requires preview rules to be enabled.
     "E302", # Checks for missing blank lines between top level functions and classes. #> Requires preview rules to be enabled.
-    # "E303", #! I disagree with this rule.
     "E304", # Checks for extraneous blank line(s) after function decorators. #> Requires preview rules to be enabled.
     "E305", # Checks for missing blank lines after the end of function or class. #> Requires preview rules to be enabled.
     "E306", # Checks for 1 blank line between nested function or class definitions. #> Requires preview rules to be enabled.
@@ -360,7 +332,6 @@ select = [
     "W191", # Checks for indentation that uses tabs.
     "W291", # Checks for superfluous trailing whitespace.
     "W292", # Checks for files missing a new line at the end of the file.
-    # "W293", #! Disagree with this rule.
     "W391", # Checks for files with multiple trailing blank lines. #> Requires preview rules to be enabled.
     "W505", # Checks for doc lines that exceed the specified maximum character length.
     "W605", # Checks for invalid escape sequences.
@@ -369,51 +340,31 @@ select = [
     "DOC402", # Checks for functions with `yield` statements that do not have "Yields" sections in their docstrings. #> Requires preview rules to be enabled.
     "DOC501", # Checks for function docstrings that do not document all explicitly raised exceptions. #> Requires preview rules to be enabled.
     "DOC502", # Checks for function docstrings that state that exceptions could be raised even though they are not directly raised in the function body. #> Requires preview rules to be enabled.
-    "D100", # Checks for undocumented public module definitions.
-    "D101", # Checks for undocumented public class definitions.
-    "D102", # Checks for undocumented public method definitions.
-    "D103", # Checks for undocumented public function definitions.
-    # "D104", #! Disagree with this rule because most "packages" are just an empty `__init__.py` file.
-    # "D105", #! Disagree with this rule because dunder methods are standardized methods.
     "D106", # Checks for undocumented public class definitions, for nested classes.
-    # "D107", #! Disagree with this rule because dunder methods are standardized methods.
-    # "D200", # Checks for single-line docstrings that are broken across multiple lines. #! Disagree with this rule.
     "D201", # Checks for docstrings on functions that are separated by one or more blank lines from the function definition.
-    # "D202", # Checks for docstrings on functions that are separated by one or more blank lines from the function body. #! Disagree with this rule.
-    # "D203", # Checks for docstrings on class definitions that are not preceded by a blank line. #! Disagree with this rule.
     "D204", # Checks for class methods that are not separated from the class's docstring by a blank line.
-    # "D205", # Checks for docstring summary lines that are not separated from the docstring description by one blank line. #! Disagree with this rule.
     "D206", # Checks for docstrings that are indented with tabs.
     "D207", # Checks for under-indented docstrings.
     "D208", # Checks for over-indented docstrings.
     "D209", # Checks for multi-line docstrings whose closing quotes are not on their own line.
     "D210", # Checks for surrounding whitespace in docstrings.
     "D211", # Checks for docstrings on class definitions that are preceded by a blank line.
-    # "D212", #! Disagree with this rule.
     "D213", # Checks for docstring summary lines that are not positioned on the second physical line of the docstring.
     "D214", # Checks for over-indented sections in docstrings. #~ I'm skeptical of this rule.
     "D215", # Checks for over-indented section underlines in docstrings.
     "D300", # Checks for docstrings that use triple single quotes instead of triple double quotes.
     "D301", # Checks for docstrings that include backslashes, but are not defined as raw string literals.
-    # "D400", #! Disagree with this rule.
-    # "D401", #! Disagree with this rule.
     "D402", # Checks for function docstrings that include the function's signature in the summary line.
     "D403", # Checks for docstrings that do not start with a capital letter.
-    # "D404", #! Disagree with this rule.
     "D405", # Checks for section headers in docstrings that do not begin with capital letters.
-    # "D406", #! Disagree with this rule.
-    # "D407", #! Disagree with this rule.
     "D408", # Checks for section underlines in docstrings that are not on the line immediately following the section name.
     "D409", # Checks for section underlines in docstrings that do not match the length of the corresponding section header.
     "D410", # Checks for docstring sections that are not separated by a single blank line.
     "D411", # Checks for docstring sections that are not separated by a blank line.
     "D412", # Checks for docstring sections that contain blank lines between a section header and a section body.
-    # "D413", #! Disagree with this rule.
     "D414", # Checks for docstrings with empty sections.
-    # "D415", #! Disagree with this rule.
     "D416", # Checks for docstring section headers that do not end with a colon.
     "D417", # Checks for function docstrings that do not include documentation for all parameters in the function.
-    # "D418", #! Disagree with this rule.
     "D419", # Checks for empty docstrings.
     "F401", # Checks for unused imports.
     "F402", # Checks for import bindings that are shadowed by loop variables.
@@ -436,7 +387,6 @@ select = [
     "F523", # Checks for `str.format` calls with unused positional arguments.
     "F524", # Checks for `str.format` calls with placeholders that are missing arguments.
     "F525", # Checks for `str.format` calls that mix automatic and manual numbering.
-    # "F541", # Checks for f-strings that do not contain any placeholder expressions. #! Disagree with this rule.
     "F601", # Checks for dictionary literals that associate multiple values with the same key.
     "F602", # Checks for dictionary keys that are repeated with different values.
     "F621", # Checks for the use of too many expressions in starred assignment statements.
@@ -471,10 +421,8 @@ select = [
     "PLC0414", # Checks for import aliases that do not rename the original package. This rule does not apply in `__init__.py` files.
     "PLC0415", # Checks for import statements outside of a module's top-level scope. #~ I'm skeptical of this rule.
     "PLC1802", # Checks for len calls on sequences in a boolean test context. #~ I'm skeptical of this rule.
-    # "PLC1901", #! I disagree with this rule.
     "PLC2401", # Checks for the use of non-ASCII characters in variable names.
     "PLC2403", # Checks for the use of non-ASCII characters in import statements.
-    # "PLC2701", #! I disagree with this rule.
     "PLC2801", # Checks for explicit use of dunder methods.
     "PLC3002", # Checks for unnecessary direct calls to lambda expressions.
     "PLE0100", # Checks for `__init__` methods that are turned into generators by the inclusion of `yield` or `yield from` expressions.
@@ -521,15 +469,6 @@ select = [
     "PLR0203", # Checks for the use of a `staticmethod` being made without the decorator. #> Requires preview rules to be enabled.
     "PLR0206", # Checks for property definitions that accept function parameters.
     "PLR0402", # Checks for submodule imports that are aliased to the submodule name.
-    # "PLR0904", #! I disagree with this rule.
-    # "PLR0911", #! I disagree with this rule.
-    # "PLR0912", #! I disagree with this rule.
-    # "PLR0913", #! I disagree with this rule.
-    # "PLR0914", #! I disagree with this rule.
-    # "PLR0915", #! I disagree with this rule.
-    # "PLR0916", #! I disagree with this rule.
-    # "PLR0917", #! I disagree with this rule.
-    # "PLR1702", #! I disagree with this rule.
     "PLR1704", # Checks for variables defined in `for`, `try`, `with` statements that redefine function parameters.
     "PLR1711", # Checks for functions that end with an unnecessary `return` or `return None`, and contain no other `return` statements.
     "PLR1714", # Checks for repeated equality comparisons that can be rewritten as a membership test.
@@ -571,7 +510,6 @@ select = [
     "PLW2101", # Checks for lock objects that are created and immediately discarded in `with` statements.
     "PLW2901", # Checks for variables defined in `for` loops and `with` statements that get overwritten within the body.
     "PLW3201", # Checks for dunder methods that have no special meaning in Python 3.
-    # "PLW3301", # Checks for nested `min` and `max` calls. #! Should not be done, but the rule produces false positives.
     "UP001", # Checks for the use of `__metaclass__ = type` in class definitions.
     "UP003", # Checks for uses of `type` that take a primitive as an argument.
     "UP004", # Checks for classes that inherit from `object`.
@@ -582,10 +520,8 @@ select = [
     "UP009", # Checks for unnecessary UTF-8 encoding declarations.
     "UP010", # Checks for unnecessary `__future__` imports.
     "UP011", # Checks for unnecessary parentheses on `functools.lru_cache` decorators.
-    # "UP012", #! I disagree with this rule.
     "UP013", # Checks for `TypedDict` declarations that use functional syntax. #~ I'm skeptical of this rule.
     "UP014", # Checks for `NamedTuple` declarations that use functional syntax. #~ I'm skeptical of this rule.
-    # "UP015", #! I disagree with this rule.
     "UP017", # Checks for uses of `datetime.timezone.utc`.
     "UP018", # Checks for unnecessary calls to `str`, `bytes`, `int`, `float`, and `bool`.
     "UP019", # Checks for uses of `typing.Text`.
@@ -620,16 +556,12 @@ select = [
     "FURB101", # Checks for uses of `open` and `read` that can be replaced by `pathlib` methods. #~ I'm skeptical of this rule. #> Requires preview rules to be enabled.
     "FURB103", # Checks for uses of `open` and `write` that can be replaced by `pathlib` methods. #~ I'm skeptical of this rule. #> Requires preview rules to be enabled.
     "FURB105", # Checks for `print` calls with unnecessary empty strings as positional arguments and unnecessary `sep` keyword arguments.
-    # "FURB110", #! I disagree with this rule.
     "FURB113", # Checks for consecutive calls to `append`. #> Requires preview rules to be enabled.
     "FURB116", # Checks for uses of `bin(...)[2:]` (or `hex`, or `oct`) to convert an integer into a string.
-    # "FURB118", #! I disagree with this rule.
     "FURB122", # Checks for the use of `IOBase.write` in a `for` loop.
     "FURB129", # Checks for uses of `readlines()` when iterating over a file line-by-line.
     "FURB131", # Checks for `del` statements that delete the entire slice of a list or dictionary. #~ I'm skeptical of this rule.
-    # "FURB132", # Checks for uses of `set.remove` that can be replaced with `set.discard`. #! Rule produces false negatives.
     "FURB136", # Checks for `if` expressions that can be replaced with `min()` or `max()` calls. #> Requires preview rules to be enabled.
-    # "FURB140", #! I disagree with this rule.
     "FURB142", # Checks for code that updates a `set` with the contents of an iterable by using a `for` loop to call `.add()` or `.discard()` on each element separately. #> Requires preview rules to be enabled.
     "FURB145", # Checks for unbounded slice expressions to copy a list. #> Requires preview rules to be enabled.
     "FURB148", # Checks for uses of `enumerate` that discard either the index or the value when iterating over a sequence. #> Requires preview rules to be enabled.
@@ -639,7 +571,6 @@ select = [
     "FURB157", # Checks for unnecessary string literal or float casts in `Decimal` constructors.
     "FURB161", # Checks for uses of `bin(...).count("1")` to perform a population count.
     "FURB162", # Checks for `datetime.fromisoformat()` calls where the only argument is an inline replacement of `Z` with a zero offset timezone.
-    # "FURB163", # #! I disagree with this rule because Python does not follow math notation for this.
     "FURB164", # Checks for unnecessary `from_float` and `from_decimal` usages to construct `Decimal` and `Fraction` instances. #> Requires preview rules to be enabled.
     "FURB166", # Checks for uses of `int` with an explicit base in which a string expression is stripped of its leading prefix (i.e., 0b, 0o, or 0x).
     "FURB167", # Checks for the use of shorthand aliases for regular expression flags.
@@ -671,8 +602,6 @@ select = [
     "RUF019", # Checks for unnecessary key checks prior to accessing a dictionary.
     "RUF020", # Checks for uses of `typing.NoReturn` and `typing.Never` in union types.
     "RUF021", # Checks for chained operators where adding parentheses could improve the clarity of the code.
-    # "RUF022", #! I disagree with this rule.
-    # "RUF023", #! I disagree with this rule.
     "RUF024", # Checks for mutable objects passed as a value argument to `dict.fromkeys`.
     "RUF026", # Checks for incorrect usages of `default_factory` as a keyword argument when initializing a `defaultdict`.
     "RUF027", # Searches for strings that look like they were meant to be f-strings, but are missing an f prefix. #~ Could be problematical with Jinja. #> Requires preview rules to be enabled.
@@ -700,7 +629,6 @@ select = [
     "RUF053", # Checks for classes that have PEP 695 while also inheriting from `typing.Generic` or `typing_extensions.Generic`.
     "RUF054", # Checks for form feed characters preceded by either a space or a tab. #> Requires preview rules to be enabled.
     "RUF055", # Checks for uses of the `re` module that can be replaced with builtin `str` methods. #> Requires preview rules to be enabled. #~ I'm skeptical of this rule.
-    # "RUF056", #! I disagree with this rule.
     "RUF057", # Checks for `round()` calls that have no effect on the input. #~ I'm skeptical of this rule.
     "RUF058", # Checks for `itertools.starmap` calls where the second argument is a `zip` call.
     "RUF059", # Checks for the presence of unused variables in unpacked assignments. #~ I'm skeptical of this rule.
@@ -713,10 +641,7 @@ select = [
     "RUF102", # Checks for `noqa` codes that are invalid.
     "RUF200", # Checks for any `pyproject.toml` that does not conform to the schema from the relevant PEPs. #~ I'm skeptical of this rule.
     "TRY002", # Checks for code that raises `Exception` or `BaseException` directly.
-    # "TRY003", #! I disagree with this rule.
     "TRY004", # Checks for type checks that do not raise `TypeError`.
-    # "TRY201", #! I disagree with this rule.
-    # "TRY203", #! I disagree with this rule.
     "TRY300", # Checks for `return` statements in `try` blocks.
     "TRY301", # Checks for `raise` statements within `try` blocks.
     "TRY400", # Checks for uses of `logging.error` instead of `logging.exception` when logging an exception.
