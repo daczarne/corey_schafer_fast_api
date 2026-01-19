@@ -1,0 +1,23 @@
+{
+    "recommendations": [
+        "aaron-bond.better-comments",
+        "charliermarsh.ruff",
+        "davidanson.vscode-markdownlint",
+        "editorconfig.editorconfig",
+        "esbenp.prettier-vscode",
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "njpwerner.autodocstring",
+        "redhat.vscode-yaml",
+        "streetsidesoftware.code-spell-checker",
+        "tamasfe.even-better-toml",
+        "yzhang.markdown-all-in-one",
+    ],
+    "unwantedRecommendations": [
+        "ms-python.autopep8",
+        "ms-python.black-formatter",
+        "ms-python.flake8",
+        "ms-python.isort",
+        "ms-python.pylint",
+    ],
+}

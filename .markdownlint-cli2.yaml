@@ -1,0 +1,6 @@
+gitignore: true
+showFound: true
+globs:
+  - "**/*.md"
+  - "!.pytest_cache"
+  - "!.venv"

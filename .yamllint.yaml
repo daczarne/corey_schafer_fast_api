@@ -1,0 +1,153 @@
+extends: default
+
+ignore-from-file: .yamlignore
+
+yaml-files:
+  - "*.yaml"
+  - "*.yml"
+  - .yamllint.yaml
+
+rules:
+
+  # This rule controls how anchors should be used.
+  anchors:
+    level: error
+    forbid-undeclared-aliases: true
+    forbid-duplicated-anchors: true
+    forbid-unused-anchors: true
+
+  # This rule forbids the use of braces (`{` and `}`). Using YAML native object declarations is preferred. Only in
+  # the case of empty objects are they accepted. In such cases, there should be no empty spaces in between the
+  # braces themselves.
+  braces:
+    level: error
+    forbid: non-empty
+    min-spaces-inside-empty: -1
+    max-spaces-inside-empty: -1
+
+  # This rule forbids the use of braces (`[` and `]`). Using YAML native array declarations is preferred. Only in the
+  # case of empty arrays are they accepted. In such cases, there should be no empty spaces in between the brackets
+  # themselves.
+  brackets:
+    level: error
+    forbid: non-empty
+    min-spaces-inside-empty: -1
+    max-spaces-inside-empty: -1
+
+  # This rule controls the number of spaces before and after colons, `:`. The value -1 means "disable", meaning that
+  # no spaces are allowed.
+  colons:
+    level: error
+    max-spaces-before: 0
+    max-spaces-after: 1
+
+  # This rule controls the number of spaces before and after commas, `,`. The value -1 means "disable", meaning that
+  # no spaces are allowed.
+  commas:
+    level: error
+    max-spaces-before: 0
+    min-spaces-after: 1
+    max-spaces-after: 1
+
+  # This rule controls the position and formatting of comments.
+  comments:
+    level: error
+    require-starting-space: true
+    ignore-shebangs: true
+    min-spaces-from-content: 1
+
+  # This rule ensures that comments follow the same level of indentation as the code the they are commenting on.
+  comments-indentation:
+    level: error
+
+  # This rule forbids the use of end-document markers (these markers were needed in early version of YAML).
+  document-end:
+    level: error
+    present: false
+
+  # This rule forbids the use of start-document markers (these markers were needed in early version of YAML).
+  document-start:
+    level: error
+    present: false
+
+  # This rule controls the maximal number of allowed consecutive blank lines.
+  empty-lines:
+    level: error
+    max: 1
+    max-start: 0
+    max-end: 1
+
+  # This rule prevents nodes with empty content that implicitly result in `null` values. We cannot enable this for
+  # example for columns with no documentation.
+  empty-values: disable
+
+  # This rule is used to limit the permitted values for floating-point numbers. We are allowing them all.
+  float-values:
+    level: error
+    forbid-inf: false
+    forbid-nan: false
+    forbid-scientific-notation: false
+    require-numeral-before-decimal: false
+
+  # This rule controls the number of spaces after hyphens (`-`).
+  hyphens:
+    level: error
+    max-spaces-after: 1
+
+  # This rule controls indentation.
+  indentation:
+    level: error
+    spaces: 2
+    indent-sequences: true
+    check-multi-line-strings: false
+
+  # This rule prevents multiple entries with the same key in mappings.
+  key-duplicates:
+    level: error
+
+  # This rule controls whether keys should be sorted alphabetically. We cannot enforce this as alphabetical sorting is
+  # not always the desired order.
+  key-ordering: disable
+
+  # This rule controls max line length, while allowing for some non-breakable words (for example, URLs) and mappings.
+  line-length:
+    level: error
+    max: 120
+    allow-non-breakable-words: true
+    allow-non-breakable-inline-mappings: true
+
+  # This rule enforces that there should always be a new empty line at EOF.
+  new-line-at-end-of-file:
+    level: error
+
+  # This rule enforces that all new-line characters have to be `unix` (`\n`).
+  new-lines:
+    level: error
+    type: unix
+
+  # This rule prevents values with octal numbers. For now this does not affect us, so we'll keep the rule disabled.
+  octal-values: disable
+
+  # This rule controls how quoted strings are handled. In YAML it is not mandatory to quote strings. All sequences of
+  # alphabetical characters are treated as strings. But there are cases in which they do need to be quoted to escape
+  # sequences that have other interpretations in YAML.
+  # This rule omits checking multi-line strings (lines starting with `|`, `>`, or `|>`).
+  quoted-strings:
+    level: error
+    quote-type: double
+    required: only-when-needed
+    extra-required: []
+    extra-allowed: []
+    allow-quoted-quotes: false
+
+  # This rule forbids the presence of trailing white space.
+  trailing-spaces:
+    level: error
+
+  # This rule forbids the use of truthy values. Only actual `true`/`false` values.
+  truthy:
+    level: error
+    allowed-values:
+      - "true"
+      - "false"
+    check-keys: false
