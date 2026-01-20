@@ -15,21 +15,22 @@ app.mount(path = "/static", app = StaticFiles(directory = "static"), name = "sta
 templates = Jinja2Templates(directory = "templates")
 
 
-posts: list[dict] = [
-    {
-        "id": 1,
-        "author": "Corey Schafer",
-        "title": "FastAPI is awesome",
-        "content": "This framework is really easy to use and super fast.",
-        "date_posted": "April 20, 2025",
-    },
-    {
-        "id": 2,
-        "author": "Jane Doe",
-        "title": "Python is great for web development",
-        "content": "Python is a great language for web development, and FastAPI makes it even better.",
-        "date_posted": "April 21, 2025",
-    },
+posts: list[PostResponse] = [
+    PostResponse(
+        id = 1,
+        author = "Corey Schafer",
+        title = "FastAPI is awesome",
+        content = "This framework is really easy to use and super fast.",
+        date_posted = "April 20, 2025",
+        
+    ),
+    PostResponse(
+        id = 2,
+        author = "Jane Doe",
+        title = "Python is great for web development",
+        content = "Python is a great language for web development, and FastAPI makes it even better.",
+        date_posted = "April 21, 2025",
+    ),
 ]
 
 
@@ -50,8 +51,8 @@ def home(request: Request) -> _TemplateResponse:
 def post_page(request: Request, post_id: int) -> _TemplateResponse:
     
     for post in posts:
-        if post.get("id") == post_id:
-            title: str = post["title"][:50]
+        if post.id == post_id:
+            title: str = post.title[:50]
             return templates.TemplateResponse(
                 request = request,
                 name = "post.html",
@@ -68,7 +69,7 @@ def post_page(request: Request, post_id: int) -> _TemplateResponse:
 
 
 @app.get(path = "/api/posts", response_model = list[PostResponse])
-def get_posts():
+def get_posts() -> list[PostResponse]:
     return posts
 
 
@@ -77,24 +78,24 @@ def get_posts():
     response_model = PostResponse,
     status_code = status.HTTP_201_CREATED,
 )
-def create_post(post: PostCreate):
-    new_id: int = max(post["id"] for post in posts) + 1 if posts else 1
-    new_post = {
-        "id": new_id,
-        "author": post.author,
-        "title": post.title,
-        "content": post.content,
-        "date_posted": "April 23, 2025",
-    }
+def create_post(post: PostCreate) -> PostResponse:
+    new_id: int = max(post.id for post in posts) + 1 if posts else 1
+    new_post = PostResponse(
+        id = new_id,
+        author = post.author,
+        title = post.title,
+        content = post.content,
+        date_posted = "April 23, 2025",
+    )
     posts.append(new_post)
     return new_post
 
 
 @app.get(path = "/api/posts/{post_id}", response_model = PostResponse)
-def get_post(post_id: int):
+def get_post(post_id: int) -> PostResponse:
     
     for post in posts:
-        if post.get("id") == post_id:
+        if post.id == post_id:
             return post
     
     raise HTTPException(
