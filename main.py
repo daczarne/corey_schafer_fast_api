@@ -44,3 +44,13 @@ def home(request: Request) -> _TemplateResponse:
 @app.get(path = "/api/posts")
 def get_posts() -> list[dict]:
     return posts
+
+
+@app.get(path = "/api/posts/{post_id}")
+def get_post(post_id: int) -> dict:
+    
+    for post in posts:
+        if post.get("id") == post_id:
+            return post
+    
+    return {"error": "Post not found"}
