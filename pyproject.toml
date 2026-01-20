@@ -3,7 +3,7 @@ name = "corey-schafer-fast-api-tutorial"
 version = "0.1.0"
 description = "Corey Schafer's fastAPI tutorial"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.13, <3.14"
 dependencies = [
     "fastapi[standard]==0.128.0",
     "pyyaml==6.0.2",
