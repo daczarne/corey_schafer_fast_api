@@ -6,7 +6,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from sqlalchemy import Result, select
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.templating import _TemplateResponse
@@ -55,10 +55,7 @@ def post_page(
         db: Annotated[Session, Depends(dependency = get_db)],
     ) -> _TemplateResponse:
     
-    result: Result[tuple[Post]] = db.execute(
-        statement = select(Post).where(Post.id == post_id),
-    )
-    post: Post | None = result.scalars().first()
+    post: Post | None = db.execute(statement = select(Post).where(Post.id == post_id)).scalars().first()
     
     if not post:
         raise HTTPException(
@@ -83,9 +80,7 @@ def user_posts_page(
         db: Annotated[Session, Depends(dependency = get_db)],
     ) -> _TemplateResponse:
     
-    user: User | None = db.execute(
-        statement = select(User).where(User.id == user_id),
-    ).scalars().first()
+    user: User | None = db.execute(statement = select(User).where(User.id == user_id)).scalars().first()
     
     if not user:
         raise HTTPException(
@@ -93,9 +88,7 @@ def user_posts_page(
             detail = "User not found",
         )
     
-    posts: Sequence[Post] = db.execute(
-        statement = select(Post).where(Post.user_id == user_id),
-    ).scalars().all()
+    posts: Sequence[Post] = db.execute(statement = select(Post).where(Post.user_id == user_id)).scalars().all()
     
     return templates.TemplateResponse(
         request = request,
@@ -161,9 +154,7 @@ def get_user(
         db: Annotated[Session, Depends(dependency = get_db)],
     ) -> User:
     
-    user: User | None = db.execute(
-        statement = select(User).where(User.id == user_id),
-    ).scalars().first()
+    user: User | None = db.execute(statement = select(User).where(User.id == user_id)).scalars().first()
     
     if not user:
         raise HTTPException(
@@ -180,9 +171,7 @@ def get_user_posts(
         db: Annotated[Session, Depends(dependency = get_db)],
     ) -> Sequence[Post]:
     
-    user: User | None = db.execute(
-        statement = select(User).where(User.id == user_id),
-    ).scalars().first()
+    user: User | None = db.execute(statement = select(User).where(User.id == user_id)).scalars().first()
     
     if not user:
         raise HTTPException(
@@ -190,9 +179,7 @@ def get_user_posts(
             detail = "User not found",
         )
     
-    posts: Sequence[Post] = db.execute(
-        statement = select(Post).where(Post.user_id == user_id),
-    ).scalars().all()
+    posts: Sequence[Post] = db.execute(statement = select(Post).where(Post.user_id == user_id)).scalars().all()
     
     return posts
 
@@ -202,9 +189,7 @@ def get_posts(
         db: Annotated[Session, Depends(dependency = get_db)],
     ) -> Sequence[Post]:
     
-    posts: Sequence[Post] = db.execute(
-        statement = select(Post),
-    ).scalars().all()
+    posts: Sequence[Post] = db.execute(statement = select(Post)).scalars().all()
     
     return posts
 
@@ -219,9 +204,7 @@ def create_post(
         db: Annotated[Session, Depends(dependency = get_db)],
     ) -> Post:
     
-    user: User | None = db.execute(
-        statement = select(User).where(User.id == post.user_id),
-    ).scalars().first()
+    user: User | None = db.execute(statement = select(User).where(User.id == post.user_id)).scalars().first()
     
     if not user:
         raise HTTPException(
@@ -248,9 +231,7 @@ def get_post(
         db: Annotated[Session, Depends(dependency = get_db)],
     ) -> Post:
     
-    post: Post | None = db.execute(
-        statement = select(Post).where(Post.id == post_id),
-    ).scalars().first()
+    post: Post | None = db.execute(statement = select(Post).where(Post.id == post_id)).scalars().first()
     
     if not post:
         raise HTTPException(
