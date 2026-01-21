@@ -11,8 +11,8 @@ from sqlalchemy.orm import Session
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.templating import _TemplateResponse
 
-import models
 from database import Base, engine, get_db
+from models import Post, User
 from schemas import PostCreate, PostResponse, UserCreate, UserResponse
 
 
@@ -37,8 +37,8 @@ def home(
         db: Annotated[Session, Depends(dependency = get_db)],
     ) -> _TemplateResponse:
     
-    result: Result[tuple[models.Post]] = db.execute(statement = select(models.Post))
-    posts: Sequence[models.Post] = result.scalars().all()
+    result: Result[tuple[Post]] = db.execute(statement = select(Post))
+    posts: Sequence[Post] = result.scalars().all()
     
     return templates.TemplateResponse(
         request = request,
@@ -57,25 +57,24 @@ def post_page(
         db: Annotated[Session, Depends(dependency = get_db)],
     ) -> _TemplateResponse:
     
-    result: Result[tuple[models.Post]] = db.execute(
-        statement = select(models.Post).where(models.Post.id == post_id),
+    result: Result[tuple[Post]] = db.execute(
+        statement = select(Post).where(Post.id == post_id),
     )
-    post: models.Post | None = result.scalars().first()
+    post: Post | None = result.scalars().first()
     
-    if post:
-        title: str = post.title[:50]
-        return templates.TemplateResponse(
-            request = request,
-            name = "post.html",
-            context = {
-                "post": post,
-                "title": title,
-            },
+    if not post:
+        raise HTTPException(
+            status_code = status.HTTP_404_NOT_FOUND,
+            detail = "Post not found",
         )
     
-    raise HTTPException(
-        status_code = status.HTTP_404_NOT_FOUND,
-        detail = "Post not found",
+    return templates.TemplateResponse(
+        request = request,
+        name = "post.html",
+        context = {
+            "post": post,
+            "title": post.title[:50],
+        },
     )
 
 
@@ -86,10 +85,10 @@ def user_posts_page(
         db: Annotated[Session, Depends(dependency = get_db)],
     ) -> _TemplateResponse:
     
-    result: Result[tuple[models.User]] = db.execute(
-        statement = select(models.User).where(models.User.id == user_id),
+    result: Result[tuple[User]] = db.execute(
+        statement = select(User).where(User.id == user_id),
     )
-    user: models.User | None = result.scalars().first()
+    user: User | None = result.scalars().first()
     
     if not user:
         raise HTTPException(
@@ -97,10 +96,10 @@ def user_posts_page(
             detail = "User not found",
         )
     
-    result2: Result[tuple[models.Post]] = db.execute(
-        statement = select(models.Post).where(models.Post.user_id == user_id),
+    result2: Result[tuple[Post]] = db.execute(
+        statement = select(Post).where(Post.user_id == user_id),
     )
-    posts: Sequence[models.Post] = result2.scalars().all()
+    posts: Sequence[Post] = result2.scalars().all()
     
     return templates.TemplateResponse(
         request = request,
@@ -126,10 +125,11 @@ def create_user(
         user: UserCreate,
         db: Annotated[Session, Depends(dependency = get_db)],
     ):
-    result: Result[tuple[models.User]] = db.execute(
-        statement = select(models.User).where(models.User.username == user.username),
+    
+    result: Result[tuple[User]] = db.execute(
+        statement = select(User).where(User.username == user.username),
     )
-    existing_user: models.User | None = result.scalars().first()
+    existing_user: User | None = result.scalars().first()
     
     if existing_user:
         raise HTTPException(
@@ -137,10 +137,11 @@ def create_user(
             detail = "Username already exists",
         )
     
-    result: Result[tuple[models.User]] = db.execute(
-        statement = select(models.User).where(models.User.email == user.email),
+    
+    result: Result[tuple[User]] = db.execute(
+        statement = select(User).where(User.email == user.email),
     )
-    existing_email: models.User | None = result.scalars().first()
+    existing_email: User | None = result.scalars().first()
     
     if existing_email:
         raise HTTPException(
@@ -148,7 +149,8 @@ def create_user(
             detail = "Email already exists",
         )
     
-    new_user: models.User = models.User(
+    
+    new_user: User = User(
         username = user.username,
         email = user.email,
     )
@@ -165,29 +167,11 @@ def get_user(
         user_id: int,
         db: Annotated[Session, Depends(dependency = get_db)],
     ):
-    result: Result[tuple[models.User]] = db.execute(
-        statement = select(models.User).where(models.User.id == user_id),
-    )
-    user: models.User | None = result.scalars().first()
     
-    if user:
-        return user
-    
-    raise HTTPException(
-        status_code = status.HTTP_404_NOT_FOUND,
-        detail = "User not found",
+    result: Result[tuple[User]] = db.execute(
+        statement = select(User).where(User.id == user_id),
     )
-
-
-@app.get(path = "/api/users/{user_id}/posts", response_model = list[PostResponse])
-def get_user_posts(
-        user_id: int,
-        db: Annotated[Session, Depends(dependency = get_db)],
-    ):
-    result: Result[tuple[models.User]] = db.execute(
-        statement = select(models.User).where(models.User.id == user_id),
-    )
-    user: models.User | None = result.scalars().first()
+    user: User | None = result.scalars().first()
     
     if not user:
         raise HTTPException(
@@ -195,10 +179,32 @@ def get_user_posts(
             detail = "User not found",
         )
     
-    result2: Result[tuple[models.Post]] = db.execute(
-        statement = select(models.Post).where(models.Post.user_id == user_id),
+    return user
+
+
+@app.get(path = "/api/users/{user_id}/posts", response_model = list[PostResponse])
+def get_user_posts(
+        user_id: int,
+        db: Annotated[Session, Depends(dependency = get_db)],
+    ):
+    
+    result: Result[tuple[User]] = db.execute(
+        statement = select(User).where(User.id == user_id),
     )
-    posts: Sequence[models.Post] = result2.scalars().all()
+    user: User | None = result.scalars().first()
+    
+    if not user:
+        raise HTTPException(
+            status_code = status.HTTP_404_NOT_FOUND,
+            detail = "User not found",
+        )
+    
+    
+    result2: Result[tuple[Post]] = db.execute(
+        statement = select(Post).where(Post.user_id == user_id),
+    )
+    posts: Sequence[Post] = result2.scalars().all()
+    
     return posts
 
 
@@ -207,10 +213,11 @@ def get_posts(
         db: Annotated[Session, Depends(dependency = get_db)],
     ):
     
-    result: Result[tuple[models.Post]] = db.execute(
-        statement = select(models.Post),
+    result: Result[tuple[Post]] = db.execute(
+        statement = select(Post),
     )
-    posts: Sequence[models.Post] = result.scalars().all()
+    posts: Sequence[Post] = result.scalars().all()
+    
     return posts
 
 
@@ -224,10 +231,10 @@ def create_post(
         db: Annotated[Session, Depends(dependency = get_db)],
     ):
     
-    result: Result[tuple[models.User]] = db.execute(
-        statement = select(models.User).where(models.User.id == post.user_id),
+    result: Result[tuple[User]] = db.execute(
+        statement = select(User).where(User.id == post.user_id),
     )
-    user: models.User | None = result.scalars().first()
+    user: User | None = result.scalars().first()
     
     if not user:
         raise HTTPException(
@@ -235,7 +242,7 @@ def create_post(
             detail = "User not found",
         )
     
-    new_post = models.Post(
+    new_post: Post = Post(
         title = post.title,
         content = post.content,
         user_id = post.user_id,
@@ -244,6 +251,7 @@ def create_post(
     db.add(instance = new_post)
     db.commit()
     db.refresh(instance = new_post)
+    
     return new_post
 
 
@@ -253,19 +261,23 @@ def get_post(
         db: Annotated[Session, Depends(dependency = get_db)],
     ):
     
-    result: Result[tuple[models.Post]] = db.execute(
-        statement = select(models.Post).where(models.Post.id == post_id),
+    result: Result[tuple[Post]] = db.execute(
+        statement = select(Post).where(Post.id == post_id),
     )
-    post: models.Post | None = result.scalars().first()
+    post: Post | None = result.scalars().first()
     
-    if post:
-        return post
+    if not post:
+        raise HTTPException(
+            status_code = status.HTTP_404_NOT_FOUND,
+            detail = "Post not found",
+        )
     
-    raise HTTPException(
-        status_code = status.HTTP_404_NOT_FOUND,
-        detail = "Post not found",
-    )
+    return post
 
+
+#* ########## *#
+#* EXCEPTIONS *#
+#* ########## *#
 
 @app.exception_handler(exc_class_or_status_code = StarletteHTTPException)
 def general_http_exception_handler(
