@@ -1,4 +1,5 @@
 addfinalizer
+autoflush
 charsets
 defaultdict
 docstrings
@@ -10,5 +11,6 @@ listdir
 metacharacter
 mkdirs
 preexec
+sessionmaker
 usefixtures
 yamlignore
