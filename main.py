@@ -18,7 +18,6 @@ from schemas import PostCreate, PostResponse, UserCreate, UserResponse
 
 Base.metadata.create_all(bind = engine)
 
-
 app: FastAPI = FastAPI()
 app.mount(path = "/static", app = StaticFiles(directory = "static"), name = "static")
 app.mount(path = "/media", app = StaticFiles(directory = "media"), name = "media")
@@ -37,8 +36,7 @@ def home(
         db: Annotated[Session, Depends(dependency = get_db)],
     ) -> _TemplateResponse:
     
-    result: Result[tuple[Post]] = db.execute(statement = select(Post))
-    posts: Sequence[Post] = result.scalars().all()
+    posts: Sequence[Post] = db.execute(statement = select(Post)).scalars().all()
     
     return templates.TemplateResponse(
         request = request,
@@ -85,10 +83,9 @@ def user_posts_page(
         db: Annotated[Session, Depends(dependency = get_db)],
     ) -> _TemplateResponse:
     
-    result: Result[tuple[User]] = db.execute(
+    user: User | None = db.execute(
         statement = select(User).where(User.id == user_id),
-    )
-    user: User | None = result.scalars().first()
+    ).scalars().first()
     
     if not user:
         raise HTTPException(
@@ -96,10 +93,9 @@ def user_posts_page(
             detail = "User not found",
         )
     
-    result2: Result[tuple[Post]] = db.execute(
+    posts: Sequence[Post] = db.execute(
         statement = select(Post).where(Post.user_id == user_id),
-    )
-    posts: Sequence[Post] = result2.scalars().all()
+    ).scalars().all()
     
     return templates.TemplateResponse(
         request = request,
@@ -124,12 +120,11 @@ def user_posts_page(
 def create_user(
         user: UserCreate,
         db: Annotated[Session, Depends(dependency = get_db)],
-    ):
+    ) -> User:
     
-    result: Result[tuple[User]] = db.execute(
+    existing_user: User | None = db.execute(
         statement = select(User).where(User.username == user.username),
-    )
-    existing_user: User | None = result.scalars().first()
+    ).scalars().first()
     
     if existing_user:
         raise HTTPException(
@@ -137,11 +132,9 @@ def create_user(
             detail = "Username already exists",
         )
     
-    
-    result: Result[tuple[User]] = db.execute(
+    existing_email: User | None = db.execute(
         statement = select(User).where(User.email == user.email),
-    )
-    existing_email: User | None = result.scalars().first()
+    ).scalars().first()
     
     if existing_email:
         raise HTTPException(
@@ -166,12 +159,11 @@ def create_user(
 def get_user(
         user_id: int,
         db: Annotated[Session, Depends(dependency = get_db)],
-    ):
+    ) -> User:
     
-    result: Result[tuple[User]] = db.execute(
+    user: User | None = db.execute(
         statement = select(User).where(User.id == user_id),
-    )
-    user: User | None = result.scalars().first()
+    ).scalars().first()
     
     if not user:
         raise HTTPException(
@@ -186,12 +178,11 @@ def get_user(
 def get_user_posts(
         user_id: int,
         db: Annotated[Session, Depends(dependency = get_db)],
-    ):
+    ) -> Sequence[Post]:
     
-    result: Result[tuple[User]] = db.execute(
+    user: User | None = db.execute(
         statement = select(User).where(User.id == user_id),
-    )
-    user: User | None = result.scalars().first()
+    ).scalars().first()
     
     if not user:
         raise HTTPException(
@@ -199,11 +190,9 @@ def get_user_posts(
             detail = "User not found",
         )
     
-    
-    result2: Result[tuple[Post]] = db.execute(
+    posts: Sequence[Post] = db.execute(
         statement = select(Post).where(Post.user_id == user_id),
-    )
-    posts: Sequence[Post] = result2.scalars().all()
+    ).scalars().all()
     
     return posts
 
@@ -211,12 +200,11 @@ def get_user_posts(
 @app.get(path = "/api/posts", response_model = list[PostResponse])
 def get_posts(
         db: Annotated[Session, Depends(dependency = get_db)],
-    ):
+    ) -> Sequence[Post]:
     
-    result: Result[tuple[Post]] = db.execute(
+    posts: Sequence[Post] = db.execute(
         statement = select(Post),
-    )
-    posts: Sequence[Post] = result.scalars().all()
+    ).scalars().all()
     
     return posts
 
@@ -229,12 +217,11 @@ def get_posts(
 def create_post(
         post: PostCreate,
         db: Annotated[Session, Depends(dependency = get_db)],
-    ):
+    ) -> Post:
     
-    result: Result[tuple[User]] = db.execute(
+    user: User | None = db.execute(
         statement = select(User).where(User.id == post.user_id),
-    )
-    user: User | None = result.scalars().first()
+    ).scalars().first()
     
     if not user:
         raise HTTPException(
@@ -259,12 +246,11 @@ def create_post(
 def get_post(
         post_id: int,
         db: Annotated[Session, Depends(dependency = get_db)],
-    ):
+    ) -> Post:
     
-    result: Result[tuple[Post]] = db.execute(
+    post: Post | None = db.execute(
         statement = select(Post).where(Post.id == post_id),
-    )
-    post: Post | None = result.scalars().first()
+    ).scalars().first()
     
     if not post:
         raise HTTPException(
