@@ -10,6 +10,7 @@ getcwdb
 listdir
 metacharacter
 mkdirs
+nullable
 preexec
 sessionmaker
 usefixtures
