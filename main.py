@@ -79,6 +79,40 @@ def post_page(
     )
 
 
+@app.get(path = "/users/{user_id}/posts", include_in_schema = False, name = "user_posts")
+def user_posts_page(
+        request: Request,
+        user_id: int,
+        db: Annotated[Session, Depends(dependency = get_db)],
+    ) -> _TemplateResponse:
+    
+    result: Result[tuple[models.User]] = db.execute(
+        statement = select(models.User).where(models.User.id == user_id),
+    )
+    user: models.User | None = result.scalars().first()
+    
+    if not user:
+        raise HTTPException(
+            status_code = status.HTTP_404_NOT_FOUND,
+            detail = "User not found",
+        )
+    
+    result2: Result[tuple[models.Post]] = db.execute(
+        statement = select(models.Post).where(models.Post.user_id == user_id),
+    )
+    posts: Sequence[models.Post] = result2.scalars().all()
+    
+    return templates.TemplateResponse(
+        request = request,
+        name = "user_posts.html",
+        context = {
+            "posts": posts,
+            "user": user,
+            "title": f"{user.username}'s posts",
+        },
+    )
+
+
 #* ######### *#
 #* API PATHS *#
 #* ######### *#
