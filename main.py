@@ -246,6 +246,24 @@ def update_user(
     return user
 
 
+@app.delete(path = "/api/users/{user_id}", status_code = status.HTTP_204_NO_CONTENT)
+def delete_user(
+        user_id: int,
+        db: Annotated[Session, Depends(dependency = get_db)],
+    ) -> None:
+    
+    user: User | None = db.execute(select(User).where(User.id == user_id)).scalars().first()
+    
+    if not user:
+        raise HTTPException(
+            status_code = status.HTTP_404_NOT_FOUND,
+            detail = "User not found",
+        )
+    
+    db.delete(instance = user)
+    db.commit()
+
+
 @app.post(
     path = "/api/posts",
     response_model = PostResponse,
