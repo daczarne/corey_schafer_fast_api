@@ -1,5 +1,5 @@
 from collections.abc import Sequence
-from typing import Annotated
+from typing import Annotated, Any
 
 from fastapi import Depends, FastAPI, HTTPException, Request, status
 from fastapi.exceptions import RequestValidationError
@@ -271,6 +271,32 @@ def update_post_full(
     post.title = post_data.title
     post.content = post_data.content
     post.user_id = post_data.user_id
+    
+    db.commit()
+    db.refresh(instance = post)
+    
+    return post
+
+
+@app.patch(path = "/api/posts/{post_id}", response_model = PostUpdate)
+def update_post_partial(
+        post_id: int,
+        post_data: PostUpdate,
+        db: Annotated[Session, Depends(dependency = get_db)],
+    ) -> Post:
+    
+    post: Post | None = db.execute(statement = select(Post).where(Post.id == post_id)).scalars().first()
+    
+    if not post:
+        raise HTTPException(
+            status_code = status.HTTP_404_NOT_FOUND,
+            detail = "Post not found",
+        )
+    
+    update_data: dict[str, Any] = post_data.model_dump(exclude_unset = True)
+    
+    for field, value in update_data.items():
+        setattr(post, field, value)
     
     db.commit()
     db.refresh(instance = post)
