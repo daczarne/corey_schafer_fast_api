@@ -109,6 +109,12 @@ def user_posts_page(
     path = "/api/users",
     response_model = UserResponse,
     status_code = status.HTTP_201_CREATED,
+    tags = ["Users"],
+    summary = "Create a new user",
+    description = """
+        This endpoint creates a new user.
+    """,
+    deprecated = False,
 )
 def create_user(
         user: UserCreate,
@@ -148,7 +154,16 @@ def create_user(
     return new_user
 
 
-@app.get(path = "/api/users/{user_id}", response_model = UserResponse)
+@app.get(
+    path = "/api/users/{user_id}",
+    response_model = UserResponse,
+    tags = ["Users"],
+    summary = "Get a user by `user_id`",
+    description = """
+        This endpoint fetches the information of an existing user.
+    """,
+    deprecated = False,
+)
 def get_user(
         user_id: int,
         db: Annotated[Session, Depends(dependency = get_db)],
@@ -165,36 +180,16 @@ def get_user(
     return user
 
 
-@app.get(path = "/api/users/{user_id}/posts", response_model = list[PostResponse])
-def get_user_posts(
-        user_id: int,
-        db: Annotated[Session, Depends(dependency = get_db)],
-    ) -> Sequence[Post]:
-    
-    user: User | None = db.execute(statement = select(User).where(User.id == user_id)).scalars().first()
-    
-    if not user:
-        raise HTTPException(
-            status_code = status.HTTP_404_NOT_FOUND,
-            detail = "User not found",
-        )
-    
-    posts: Sequence[Post] = db.execute(statement = select(Post).where(Post.user_id == user_id)).scalars().all()
-    
-    return posts
-
-
-@app.get(path = "/api/posts", response_model = list[PostResponse])
-def get_posts(
-        db: Annotated[Session, Depends(dependency = get_db)],
-    ) -> Sequence[Post]:
-    
-    posts: Sequence[Post] = db.execute(statement = select(Post)).scalars().all()
-    
-    return posts
-
-
-@app.patch(path = "/api/users/{user_id}", response_model = UserResponse)
+@app.patch(
+    path = "/api/users/{user_id}",
+    response_model = UserResponse,
+    tags = ["Users"],
+    summary = "Update a user by `user_id` (partial or total update)",
+    description = """
+        This endpoint updates the attributes of the user.
+    """,
+    deprecated = False,
+)
 def update_user(
         user_id: int,
         user_update: UserUpdate,
@@ -246,13 +241,22 @@ def update_user(
     return user
 
 
-@app.delete(path = "/api/users/{user_id}", status_code = status.HTTP_204_NO_CONTENT)
+@app.delete(
+    path = "/api/users/{user_id}",
+    status_code = status.HTTP_204_NO_CONTENT,
+    tags = ["Users"],
+    summary = "Delete a user by `user_id`",
+    description = """
+        This endpoint deletes a user. All posts associated with that user will also be deleted.
+    """,
+    deprecated = False,
+)
 def delete_user(
         user_id: int,
         db: Annotated[Session, Depends(dependency = get_db)],
     ) -> None:
     
-    user: User | None = db.execute(select(User).where(User.id == user_id)).scalars().first()
+    user: User | None = db.execute(statement = select(User).where(User.id == user_id)).scalars().first()
     
     if not user:
         raise HTTPException(
@@ -264,10 +268,63 @@ def delete_user(
     db.commit()
 
 
+@app.get(
+    path = "/api/users/{user_id}/posts",
+    response_model = list[PostResponse],
+    tags = ["User Posts"],
+    summary = "Get all posts from a given user by `user_id`",
+    description = """
+        This endpoint fetches all posts associated with a given user.
+    """,
+    deprecated = False,
+)
+def get_user_posts(
+        user_id: int,
+        db: Annotated[Session, Depends(dependency = get_db)],
+    ) -> Sequence[Post]:
+    
+    user: User | None = db.execute(statement = select(User).where(User.id == user_id)).scalars().first()
+    
+    if not user:
+        raise HTTPException(
+            status_code = status.HTTP_404_NOT_FOUND,
+            detail = "User not found",
+        )
+    
+    posts: Sequence[Post] = db.execute(statement = select(Post).where(Post.user_id == user_id)).scalars().all()
+    
+    return posts
+
+
+@app.get(
+    path = "/api/posts",
+    response_model = list[PostResponse],
+    tags = ["Wall"],
+    summary = "Get all posts for the wall",
+    description = """
+        This endpoint fetches all posts in the DB.
+    """,
+    deprecated = False,
+)
+def get_posts(
+        db: Annotated[Session, Depends(dependency = get_db)],
+    ) -> Sequence[Post]:
+    
+    posts: Sequence[Post] = db.execute(statement = select(Post)).scalars().all()
+    
+    return posts
+
+
 @app.post(
     path = "/api/posts",
     response_model = PostResponse,
     status_code = status.HTTP_201_CREATED,
+    tags = ["Posts"],
+    summary = "Create a new post",
+    description = """
+        This endpoint creates a new post.
+    """,
+    deprecated = False,
 )
 def create_post(
         post: PostCreate,
@@ -295,7 +352,16 @@ def create_post(
     return new_post
 
 
-@app.get(path = "/api/posts/{post_id}", response_model = PostResponse)
+@app.get(
+    path = "/api/posts/{post_id}",
+    response_model = PostResponse,
+    tags = ["Posts"],
+    summary = "Get a post by `post_id`",
+    description = """
+        This endpoint returns the post with the supplied `post_id`.
+    """,
+    deprecated = False,
+)
 def get_post(
         post_id: int,
         db: Annotated[Session, Depends(dependency = get_db)],
@@ -312,7 +378,16 @@ def get_post(
     return post
 
 
-@app.put(path = "/api/posts/{post_id}", response_model = PostUpdate)
+@app.put(
+    path = "/api/posts/{post_id}",
+    response_model = PostUpdate,
+    tags = ["Posts"],
+    summary = "Update a post by `post_id` (full update)",
+    description = """
+        This endpoint updates all fields in the post with the supplied `post_id` (full update).
+    """,
+    deprecated = False,
+)
 def update_post_full(
         post_id: int,
         post_data: PostCreate,
@@ -348,7 +423,16 @@ def update_post_full(
     return post
 
 
-@app.patch(path = "/api/posts/{post_id}", response_model = PostUpdate)
+@app.patch(
+    path = "/api/posts/{post_id}",
+    response_model = PostUpdate,
+    tags = ["Posts"],
+    summary = "Update a post by `post_id` (partial update)",
+    description = """
+        This endpoint updates the supplied attributes from the post with the supplied `post_id` (partial update).
+    """,
+    deprecated = False,
+)
 def update_post_partial(
         post_id: int,
         post_data: PostUpdate,
@@ -374,7 +458,16 @@ def update_post_partial(
     return post
 
 
-@app.delete(path = "/api/posts/{post_id}", status_code = status.HTTP_204_NO_CONTENT)
+@app.delete(
+    path = "/api/posts/{post_id}",
+    status_code = status.HTTP_204_NO_CONTENT,
+    tags = ["Posts"],
+    summary = "Delete a post by `post_id`",
+    description = """
+        This endpoint deletes the post with the supplied `post_id`.
+    """,
+    deprecated = False,
+)
 def delete_post(
         post_id: int,
         db: Annotated[Session, Depends(dependency = get_db)],
