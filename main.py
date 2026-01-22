@@ -13,7 +13,7 @@ from starlette.templating import _TemplateResponse
 
 from database import Base, engine, get_db
 from models import Post, User
-from schemas import PostCreate, PostResponse, UserCreate, UserResponse
+from schemas import PostCreate, PostResponse, PostUpdate, UserCreate, UserResponse
 
 
 Base.metadata.create_all(bind = engine)
@@ -238,6 +238,42 @@ def get_post(
             status_code = status.HTTP_404_NOT_FOUND,
             detail = "Post not found",
         )
+    
+    return post
+
+
+@app.put(path = "/api/posts/{post_id}", response_model = PostUpdate)
+def update_post_full(
+        post_id: int,
+        post_data: PostCreate,
+        db: Annotated[Session, Depends(dependency = get_db)],
+    ) -> Post:
+    
+    post: Post | None = db.execute(statement = select(Post).where(Post.id == post_id)).scalars().first()
+    
+    if not post:
+        raise HTTPException(
+            status_code = status.HTTP_404_NOT_FOUND,
+            detail = "Post not found",
+        )
+    
+    if post_data.user_id != post.user_id:
+        user: User | None = db.execute(
+            statement = select(User).where(User.id == post_data.user_id),
+        ).scalars().first()
+        
+        if not user:
+            raise HTTPException(
+                status_code = status.HTTP_404_NOT_FOUND,
+                detail = "User not found",
+            )
+    
+    post.title = post_data.title
+    post.content = post_data.content
+    post.user_id = post_data.user_id
+    
+    db.commit()
+    db.refresh(instance = post)
     
     return post
 
