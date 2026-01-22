@@ -304,6 +304,24 @@ def update_post_partial(
     return post
 
 
+@app.delete(path = "/api/posts/{post_id}", status_code = status.HTTP_204_NO_CONTENT)
+def delete_post(
+        post_id: int,
+        db: Annotated[Session, Depends(dependency = get_db)],
+    ) -> None:
+    
+    post: Post | None = db.execute(statement = select(Post).where(Post.id == post_id)).scalars().first()
+    
+    if not post:
+        raise HTTPException(
+            status_code = status.HTTP_404_NOT_FOUND,
+            detail = "Post not found",
+        )
+    
+    db.delete(instance = post)
+    db.commit()
+
+
 #* ########## *#
 #* EXCEPTIONS *#
 #* ########## *#

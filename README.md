@@ -10,6 +10,15 @@ links:
 1. [SQLAlchemy models and relationships][sqlalchemy-models-and-relationships]
 1. [Completing CRUD][completing-crud]
 
+## Status code used
+
+- **200 OK**: successful `GET`, `PUT`, or `PATCH`
+- **201 Created**: successful `POST` for users and posts
+- **204 No Content**: successful `DELETE`
+- **400 Bad Request**: duplicated username/email when creating users
+- **404 Not Found**: resource doesn't exist (user or post)
+- **422 Unprocessable Entity**: validation error (automatic from Pydantic)
+
 [getting-started]: https://www.youtube.com/watch?v=7AMjmCTumuo
 [jinja2-templates]: https://www.youtube.com/watch?v=G4NIB9Rx9Qs
 [path-parameters]: https://www.youtube.com/watch?v=WRjXIA5pMtk
