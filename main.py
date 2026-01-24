@@ -385,7 +385,10 @@ async def create_post(
     
     db.add(instance = new_post)
     await db.commit()
-    await db.refresh(instance = new_post)
+    await db.refresh(
+        instance = new_post,
+        attribute_names = ["author"],
+    )
     
     return new_post
 
