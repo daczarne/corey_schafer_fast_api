@@ -2,9 +2,9 @@ from collections.abc import Sequence
 from contextlib import asynccontextmanager
 from typing import Annotated, Any
 
-from fastapi import Depends, FastAPI, HTTPException, Request, status
+from fastapi import Depends, FastAPI, HTTPException, Request, Response, status
+from fastapi.exception_handlers import http_exception_handler, request_validation_exception_handler
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import Result, select
@@ -544,22 +544,17 @@ async def delete_post(
 #* ########## *#
 
 @app.exception_handler(exc_class_or_status_code = StarletteHTTPException)
-def general_http_exception_handler(
+async def general_http_exception_handler(
         request: Request,
         exception: StarletteHTTPException,
-    ) -> JSONResponse | _TemplateResponse:
+    ) -> Response | _TemplateResponse:
+    
+    if request.url.path.startswith("/api"):
+        return await http_exception_handler(request = request, exc = exception)
     
     message: str = (
         exception.detail if exception.detail else "An error occurred. Please check your request and try again."
     )
-    
-    if request.url.path.startswith("/api"):
-        return JSONResponse(
-            status_code = exception.status_code,
-            content = {
-                "detail": message,
-            },
-        )
     
     return templates.TemplateResponse(
         request = request,
@@ -574,18 +569,13 @@ def general_http_exception_handler(
 
 
 @app.exception_handler(exc_class_or_status_code = RequestValidationError)
-def validation_exception_handler(
+async def validation_exception_handler(
         request: Request,
         exception: RequestValidationError,
-    ) -> JSONResponse | _TemplateResponse:
+    ) -> Response | _TemplateResponse:
     
     if request.url.path.startswith("/api"):
-        return JSONResponse(
-            status_code = status.HTTP_422_UNPROCESSABLE_CONTENT,
-            content = {
-                "detail": exception.errors(),
-            },
-        )
+        return await request_validation_exception_handler(request = request, exc = exception)
     
     return templates.TemplateResponse(
         request = request,
