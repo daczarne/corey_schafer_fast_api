@@ -10,6 +10,7 @@ links:
 1. [SQLAlchemy models and relationships][sqlalchemy-models-and-relationships]
 1. [Completing CRUD][completing-crud]
 1. [Async][async]
+1. [Routers][routers]
 
 ## Status code used
 
@@ -27,3 +28,4 @@ links:
 [sqlalchemy-models-and-relationships]: https://www.youtube.com/watch?v=NvOV3ig2tGY
 [completing-crud]: https://www.youtube.com/watch?v=VyoGAoxQhxM
 [async]: https://www.youtube.com/watch?v=2JPDt-Jp6fM
+[routers]: https://www.youtube.com/watch?v=NkgIHa6KtHg
