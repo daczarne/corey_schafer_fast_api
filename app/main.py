@@ -13,9 +13,9 @@ from sqlalchemy.orm import selectinload
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.templating import _TemplateResponse
 
-from database import Base, engine, get_db
-from models import Post, User
-from routers import posts, users
+from app.database import Base, engine, get_db
+from app.models import Post, User
+from app.routers import posts, users
 
 
 @asynccontextmanager
@@ -31,10 +31,10 @@ async def lifespan(_app: FastAPI):  # noqa: ANN201
 
 
 app: FastAPI = FastAPI(lifespan = lifespan)
-app.mount(path = "/static", app = StaticFiles(directory = "static"), name = "static")
-app.mount(path = "/media", app = StaticFiles(directory = "media"), name = "media")
+app.mount(path = "/static", app = StaticFiles(directory = "app/static"), name = "static")
+app.mount(path = "/media", app = StaticFiles(directory = "app/media"), name = "media")
 
-templates: Jinja2Templates = Jinja2Templates(directory = "templates")
+templates: Jinja2Templates = Jinja2Templates(directory = "app/templates")
 
 app.include_router(router = users.router, prefix = "/api/users", tags = ["Users"])
 app.include_router(router = posts.router, prefix = "/api/posts", tags = ["Posts"])
