@@ -503,7 +503,10 @@ async def update_post_partial(
         setattr(post, field, value)
     
     await db.commit()
-    await db.refresh(instance = post)
+    await db.refresh(
+        instance = post,
+        attribute_names = ["author"],
+    )
     
     return post
 
