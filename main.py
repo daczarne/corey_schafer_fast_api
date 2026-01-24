@@ -464,7 +464,10 @@ async def update_post_full(
     post.user_id = post_data.user_id
     
     await db.commit()
-    await db.refresh(instance = post)
+    await db.refresh(
+        instance = post,
+        attribute_names = ["author"],
+    )
     
     return post
 
