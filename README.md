@@ -9,6 +9,7 @@ links:
 1. [Pydantic schemas][pydantic-schemas]
 1. [SQLAlchemy models and relationships][sqlalchemy-models-and-relationships]
 1. [Completing CRUD][completing-crud]
+1. [Async][async]
 
 ## Status code used
 
@@ -25,3 +26,4 @@ links:
 [pydantic-schemas]: https://www.youtube.com/watch?v=9GHxnttXxrA
 [sqlalchemy-models-and-relationships]: https://www.youtube.com/watch?v=NvOV3ig2tGY
 [completing-crud]: https://www.youtube.com/watch?v=VyoGAoxQhxM
+[async]: https://www.youtube.com/watch?v=2JPDt-Jp6fM
