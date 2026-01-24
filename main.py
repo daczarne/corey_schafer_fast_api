@@ -19,7 +19,7 @@ from schemas import PostCreate, PostResponse, PostUpdate, UserCreate, UserRespon
 
 
 @asynccontextmanager
-async def lifespan(_app: FastAPI):
+async def lifespan(_app: FastAPI):  # noqa: ANN201
     
     # Startup
     async with engine.begin() as conn:
