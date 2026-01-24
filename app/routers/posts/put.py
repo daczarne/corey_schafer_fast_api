@@ -15,7 +15,6 @@ router: APIRouter = APIRouter()
 @router.put(
     path = "/{post_id}",
     response_model = PostUpdate,
-    tags = ["posts"],
     summary = "Update a post by `post_id` (full update)",
     description = """
         This endpoint updates all fields in the post with the supplied `post_id` (full update).

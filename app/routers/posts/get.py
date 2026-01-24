@@ -17,7 +17,6 @@ router: APIRouter = APIRouter()
 @router.get(
     path = "/",
     response_model = list[PostResponse],
-    tags = ["wall"],
     summary = "Get all posts for the wall",
     description = """
         This endpoint fetches all posts in the DB.
@@ -39,7 +38,6 @@ async def get_posts(
 @router.get(
     path = "/{post_id}",
     response_model = PostResponse,
-    tags = ["posts"],
     summary = "Get a post by `post_id`",
     description = """
         This endpoint returns the post with the supplied `post_id`.

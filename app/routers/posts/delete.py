@@ -14,7 +14,6 @@ router: APIRouter = APIRouter()
 @router.delete(
     path = "/{post_id}",
     status_code = status.HTTP_204_NO_CONTENT,
-    tags = ["posts"],
     summary = "Delete a post by `post_id`",
     description = """
         This endpoint deletes the post with the supplied `post_id`.

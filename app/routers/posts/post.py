@@ -16,7 +16,6 @@ router: APIRouter = APIRouter()
     path = "/",
     response_model = PostResponse,
     status_code = status.HTTP_201_CREATED,
-    tags = ["posts"],
     summary = "Create a new post",
     description = """
         This endpoint creates a new post.

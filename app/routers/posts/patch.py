@@ -15,7 +15,6 @@ router: APIRouter = APIRouter()
 @router.patch(
     path = "/{post_id}",
     response_model = PostUpdate,
-    tags = ["posts"],
     summary = "Update a post by `post_id` (partial update)",
     description = """
         This endpoint updates the supplied attributes from the post with the supplied `post_id` (partial update).
