@@ -51,7 +51,6 @@ async def home(
     posts_query: Result[tuple[Post]] = await db.execute(
         statement = select(Post).options(selectinload(Post.author)),
     )
-    
     posts: Sequence[Post] = posts_query.scalars().all()
     
     return templates.TemplateResponse(
@@ -147,9 +146,9 @@ async def create_user(
     query_username: Result[tuple[User]] = await db.execute(
         statement = select(User).where(User.username == user.username),
     )
-    existing_user: User | None = query_username.scalars().first()
+    existing_username: User | None = query_username.scalars().first()
     
-    if existing_user:
+    if existing_username:
         raise HTTPException(
             status_code = status.HTTP_400_BAD_REQUEST,
             detail = "Username already exists",
