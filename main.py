@@ -9,7 +9,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import Result, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import Session, selectinload
+from sqlalchemy.orm import selectinload
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.templating import _TemplateResponse
 
@@ -512,12 +512,13 @@ async def update_post_partial(
     """,
     deprecated = False,
 )
-def delete_post(
+async def delete_post(
         post_id: int,
-        db: Annotated[Session, Depends(dependency = get_db)],
+        db: Annotated[AsyncSession, Depends(dependency = get_db)],
     ) -> None:
     
-    post: Post | None = db.execute(statement = select(Post).where(Post.id == post_id)).scalars().first()
+    query_post: Result[tuple[Post]] = await db.execute(statement = select(Post).where(Post.id == post_id))
+    post: Post | None = query_post.scalars().first()
     
     if not post:
         raise HTTPException(
@@ -525,8 +526,8 @@ def delete_post(
             detail = "Post not found",
         )
     
-    db.delete(instance = post)
-    db.commit()
+    await db.delete(instance = post)
+    await db.commit()
 
 
 #* ########## *#
