@@ -216,13 +216,14 @@ async def get_user(
     """,
     deprecated = False,
 )
-def update_user(
+async def update_user(
         user_id: int,
         user_update: UserUpdate,
-        db: Annotated[Session, Depends(dependency = get_db)],
+        db: Annotated[AsyncSession, Depends(dependency = get_db)],
     ) -> User:
     
-    user: User | None = db.execute(statement = select(User).where(User.id == user_id)).scalars().first()
+    query_user: Result[tuple[User]] = await db.execute(statement = select(User).where(User.id == user_id))
+    user: User | None = query_user.scalars().first()
     
     if not user:
         raise HTTPException(
@@ -231,9 +232,10 @@ def update_user(
         )
     
     if user_update.username is not None and user_update.username != user.username:
-        existing_user: User | None = db.execute(
+        query_existing_user: Result[tuple[User]] = await db.execute(
             statement = select(User).where(User.username == user_update.username),
-        ).scalars().first()
+        )
+        existing_user: User | None = query_existing_user.scalars().first()
         
         if existing_user:
             raise HTTPException(
@@ -242,9 +244,10 @@ def update_user(
             )
     
     if user_update.email is not None and user_update.email != user.email:
-        existing_email: User | None = db.execute(
+        query_existing_email: Result[tuple[User]] = await db.execute(
             statement = select(User).where(User.email == user_update.email),
-        ).scalars().first()
+        )
+        existing_email: User | None = query_existing_email.scalars().first()
         
         if existing_email:
             raise HTTPException(
@@ -261,8 +264,8 @@ def update_user(
     if user_update.image_file is not None:
         user.image_file = user_update.image_file
     
-    db.commit()
-    db.refresh(instance = user)
+    await db.commit()
+    await db.refresh(instance = user)
     
     return user
 
