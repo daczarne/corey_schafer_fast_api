@@ -15,7 +15,8 @@ from starlette.templating import _TemplateResponse
 
 from app.database import Base, engine, get_db
 from app.models import Post, User
-from app.routers import posts, users
+from app.routers import posts
+from app.routers.users import router as users_router
 
 
 @asynccontextmanager
@@ -36,8 +37,8 @@ app.mount(path = "/media", app = StaticFiles(directory = "app/media"), name = "m
 
 templates: Jinja2Templates = Jinja2Templates(directory = "app/templates")
 
-app.include_router(router = users.router, prefix = "/api/users", tags = ["Users"])
-app.include_router(router = posts.router, prefix = "/api/posts", tags = ["Posts"])
+app.include_router(router = users_router, prefix = "/api/users", tags = ["users"])
+app.include_router(router = posts.router, prefix = "/api/posts", tags = ["posts"])
 
 
 #* ########## *#

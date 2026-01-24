@@ -17,7 +17,7 @@ router: APIRouter = APIRouter()
 @router.get(
     path = "",
     response_model = list[PostResponse],
-    tags = ["Wall"],
+    tags = ["wall"],
     summary = "Get all posts for the wall",
     description = """
         This endpoint fetches all posts in the DB.
@@ -40,7 +40,7 @@ async def get_posts(
     path = "",
     response_model = PostResponse,
     status_code = status.HTTP_201_CREATED,
-    tags = ["Posts"],
+    tags = ["posts"],
     summary = "Create a new post",
     description = """
         This endpoint creates a new post.
@@ -80,7 +80,7 @@ async def create_post(
 @router.get(
     path = "/{post_id}",
     response_model = PostResponse,
-    tags = ["Posts"],
+    tags = ["posts"],
     summary = "Get a post by `post_id`",
     description = """
         This endpoint returns the post with the supplied `post_id`.
@@ -109,7 +109,7 @@ async def get_post(
 @router.put(
     path = "/{post_id}",
     response_model = PostUpdate,
-    tags = ["Posts"],
+    tags = ["posts"],
     summary = "Update a post by `post_id` (full update)",
     description = """
         This endpoint updates all fields in the post with the supplied `post_id` (full update).
@@ -159,7 +159,7 @@ async def update_post_full(
 @router.patch(
     path = "/{post_id}",
     response_model = PostUpdate,
-    tags = ["Posts"],
+    tags = ["posts"],
     summary = "Update a post by `post_id` (partial update)",
     description = """
         This endpoint updates the supplied attributes from the post with the supplied `post_id` (partial update).
@@ -198,7 +198,7 @@ async def update_post_partial(
 @router.delete(
     path = "/{post_id}",
     status_code = status.HTTP_204_NO_CONTENT,
-    tags = ["Posts"],
+    tags = ["posts"],
     summary = "Delete a post by `post_id`",
     description = """
         This endpoint deletes the post with the supplied `post_id`.
