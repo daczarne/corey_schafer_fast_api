@@ -280,12 +280,13 @@ async def update_user(
     """,
     deprecated = False,
 )
-def delete_user(
+async def delete_user(
         user_id: int,
-        db: Annotated[Session, Depends(dependency = get_db)],
+        db: Annotated[AsyncSession, Depends(dependency = get_db)],
     ) -> None:
     
-    user: User | None = db.execute(statement = select(User).where(User.id == user_id)).scalars().first()
+    result: Result[tuple[User]] = await db.execute(statement = select(User).where(User.id == user_id))
+    user: User | None = result.scalars().first()
     
     if not user:
         raise HTTPException(
@@ -293,8 +294,8 @@ def delete_user(
             detail = "User not found",
         )
     
-    db.delete(instance = user)
-    db.commit()
+    await db.delete(instance = user)
+    await db.commit()
 
 
 @app.get(
