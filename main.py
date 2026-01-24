@@ -1,4 +1,5 @@
 from collections.abc import Sequence
+from contextlib import asynccontextmanager
 from typing import Annotated, Any
 
 from fastapi import Depends, FastAPI, HTTPException, Request, status
@@ -6,8 +7,9 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy import Result, select
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Session, selectinload
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.templating import _TemplateResponse
 
@@ -16,9 +18,19 @@ from models import Post, User
 from schemas import PostCreate, PostResponse, PostUpdate, UserCreate, UserResponse, UserUpdate
 
 
-Base.metadata.create_all(bind = engine)
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    
+    # Startup
+    async with engine.begin() as conn:
+        await conn.run_sync(fn = Base.metadata.create_all)
+    yield
+    
+    # Shutdown
+    await engine.dispose()
 
-app: FastAPI = FastAPI()
+
+app: FastAPI = FastAPI(lifespan = lifespan)
 app.mount(path = "/static", app = StaticFiles(directory = "static"), name = "static")
 app.mount(path = "/media", app = StaticFiles(directory = "media"), name = "media")
 
@@ -31,12 +43,16 @@ templates = Jinja2Templates(directory = "templates")
 
 @app.get(path = "/", include_in_schema = False, name = "home")
 @app.get(path = "/posts", include_in_schema = False, name = "posts")
-def home(
+async def home(
         request: Request,
-        db: Annotated[Session, Depends(dependency = get_db)],
+        db: Annotated[AsyncSession, Depends(dependency = get_db)],
     ) -> _TemplateResponse:
     
-    posts: Sequence[Post] = db.execute(statement = select(Post)).scalars().all()
+    posts_query: Result[tuple[Post]] = await db.execute(
+        statement = select(Post).options(selectinload(Post.author)),
+    )
+    
+    posts: Sequence[Post] = posts_query.scalars().all()
     
     return templates.TemplateResponse(
         request = request,
@@ -49,13 +65,16 @@ def home(
 
 
 @app.get(path = "/posts/{post_id}", include_in_schema = False)
-def post_page(
+async def post_page(
         request: Request,
         post_id: int,
-        db: Annotated[Session, Depends(dependency = get_db)],
+        db: Annotated[AsyncSession, Depends(dependency = get_db)],
     ) -> _TemplateResponse:
     
-    post: Post | None = db.execute(statement = select(Post).where(Post.id == post_id)).scalars().first()
+    post_query: Result[tuple[Post]] = await db.execute(
+        statement = select(Post).options(selectinload(Post.author)).where(Post.id == post_id),
+    )
+    post: Post | None = post_query.scalars().first()
     
     if not post:
         raise HTTPException(
@@ -74,13 +93,14 @@ def post_page(
 
 
 @app.get(path = "/users/{user_id}/posts", include_in_schema = False, name = "user_posts")
-def user_posts_page(
+async def user_posts_page(
         request: Request,
         user_id: int,
-        db: Annotated[Session, Depends(dependency = get_db)],
+        db: Annotated[AsyncSession, Depends(dependency = get_db)],
     ) -> _TemplateResponse:
     
-    user: User | None = db.execute(statement = select(User).where(User.id == user_id)).scalars().first()
+    query_user: Result[tuple[User]] = await db.execute(statement = select(User).where(User.id == user_id))
+    user: User | None = query_user.scalars().first()
     
     if not user:
         raise HTTPException(
@@ -88,7 +108,10 @@ def user_posts_page(
             detail = "User not found",
         )
     
-    posts: Sequence[Post] = db.execute(statement = select(Post).where(Post.user_id == user_id)).scalars().all()
+    query_post: Result[tuple[Post]] = await db.execute(
+        statement = select(Post).options(selectinload(Post.author)).where(Post.user_id == user_id),
+    )
+    posts: Sequence[Post] = query_post.scalars().all()
     
     return templates.TemplateResponse(
         request = request,
@@ -116,14 +139,15 @@ def user_posts_page(
     """,
     deprecated = False,
 )
-def create_user(
+async def create_user(
         user: UserCreate,
-        db: Annotated[Session, Depends(dependency = get_db)],
+        db: Annotated[AsyncSession, Depends(dependency = get_db)],
     ) -> User:
     
-    existing_user: User | None = db.execute(
+    query_username: Result[tuple[User]] = await db.execute(
         statement = select(User).where(User.username == user.username),
-    ).scalars().first()
+    )
+    existing_user: User | None = query_username.scalars().first()
     
     if existing_user:
         raise HTTPException(
@@ -131,9 +155,10 @@ def create_user(
             detail = "Username already exists",
         )
     
-    existing_email: User | None = db.execute(
+    query_email: Result[tuple[User]] = await db.execute(
         statement = select(User).where(User.email == user.email),
-    ).scalars().first()
+    )
+    existing_email: User | None = query_email.scalars().first()
     
     if existing_email:
         raise HTTPException(
@@ -148,8 +173,8 @@ def create_user(
     )
     
     db.add(instance = new_user)
-    db.commit()
-    db.refresh(instance = new_user)
+    await db.commit()
+    await db.refresh(instance = new_user)
     
     return new_user
 
@@ -164,12 +189,13 @@ def create_user(
     """,
     deprecated = False,
 )
-def get_user(
+async def get_user(
         user_id: int,
-        db: Annotated[Session, Depends(dependency = get_db)],
+        db: Annotated[AsyncSession, Depends(dependency = get_db)],
     ) -> User:
     
-    user: User | None = db.execute(statement = select(User).where(User.id == user_id)).scalars().first()
+    query_user: Result[tuple[User]] = await db.execute(statement = select(User).where(User.id == user_id))
+    user: User | None = query_user.scalars().first()
     
     if not user:
         raise HTTPException(

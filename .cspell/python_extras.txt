@@ -12,6 +12,7 @@ metacharacter
 mkdirs
 nullable
 preexec
+selectinload
 sessionmaker
 usefixtures
 yamlignore
