@@ -304,12 +304,13 @@ def delete_user(
     """,
     deprecated = False,
 )
-def get_user_posts(
+async def get_user_posts(
         user_id: int,
-        db: Annotated[Session, Depends(dependency = get_db)],
+        db: Annotated[AsyncSession, Depends(dependency = get_db)],
     ) -> Sequence[Post]:
     
-    user: User | None = db.execute(statement = select(User).where(User.id == user_id)).scalars().first()
+    query_user: Result[tuple[User]] = await db.execute(statement = select(User).where(User.id == user_id))
+    user: User | None = query_user.scalars().first()
     
     if not user:
         raise HTTPException(
@@ -317,7 +318,10 @@ def get_user_posts(
             detail = "User not found",
         )
     
-    posts: Sequence[Post] = db.execute(statement = select(Post).where(Post.user_id == user_id)).scalars().all()
+    query_posts: Result[tuple[Post]] = await db.execute(
+        statement = select(Post).options(selectinload(Post.author)).where(Post.user_id == user_id),
+    )
+    posts: Sequence[Post] = query_posts.scalars().all()
     
     return posts
 
