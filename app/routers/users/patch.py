@@ -15,7 +15,6 @@ router: APIRouter = APIRouter()
 @router.patch(
     path = "{user_id}",
     response_model = UserResponse,
-    tags = ["users"],
     summary = "Update a user by `user_id` (partial or total update)",
     description = """
         This endpoint updates the attributes of the user.

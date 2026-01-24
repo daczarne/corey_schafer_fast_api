@@ -17,7 +17,6 @@ router: APIRouter = APIRouter()
 @router.get(
     path = "/{user_id}",
     response_model = UserResponse,
-    tags = ["users"],
     summary = "Get a user by `user_id`",
     description = """
         This endpoint fetches the information of an existing user.
@@ -44,7 +43,6 @@ async def get_user(
 @router.get(
     path = "/{user_id}/posts",
     response_model = list[PostResponse],
-    tags = ["user posts"],
     summary = "Get all posts from a given user by `user_id`",
     description = """
         This endpoint fetches all posts associated with a given user.

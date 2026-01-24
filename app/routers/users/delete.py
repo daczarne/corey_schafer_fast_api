@@ -14,7 +14,6 @@ router: APIRouter = APIRouter()
 @router.delete(
     path = "/{user_id}",
     status_code = status.HTTP_204_NO_CONTENT,
-    tags = ["users"],
     summary = "Delete a user by `user_id`",
     description = """
         This endpoint deletes a user. All posts associated with that user will also be deleted.

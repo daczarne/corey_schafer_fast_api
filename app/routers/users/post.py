@@ -16,7 +16,6 @@ router: APIRouter = APIRouter()
     path = "/",
     response_model = UserResponse,
     status_code = status.HTTP_201_CREATED,
-    tags = ["users"],
     summary = "Create a new user",
     description = """
         This endpoint creates a new user.
