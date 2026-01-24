@@ -429,13 +429,14 @@ async def get_post(
     """,
     deprecated = False,
 )
-def update_post_full(
+async def update_post_full(
         post_id: int,
         post_data: PostCreate,
-        db: Annotated[Session, Depends(dependency = get_db)],
+        db: Annotated[AsyncSession, Depends(dependency = get_db)],
     ) -> Post:
     
-    post: Post | None = db.execute(statement = select(Post).where(Post.id == post_id)).scalars().first()
+    query_post: Result[tuple[Post]] = await db.execute(statement = select(Post).where(Post.id == post_id))
+    post: Post | None = query_post.scalars().first()
     
     if not post:
         raise HTTPException(
@@ -444,9 +445,10 @@ def update_post_full(
         )
     
     if post_data.user_id != post.user_id:
-        user: User | None = db.execute(
+        query_user: Result[tuple[User]] = await db.execute(
             statement = select(User).where(User.id == post_data.user_id),
-        ).scalars().first()
+        )
+        user: User | None = query_user.scalars().first()
         
         if not user:
             raise HTTPException(
@@ -458,8 +460,8 @@ def update_post_full(
     post.content = post_data.content
     post.user_id = post_data.user_id
     
-    db.commit()
-    db.refresh(instance = post)
+    await db.commit()
+    await db.refresh(instance = post)
     
     return post
 
