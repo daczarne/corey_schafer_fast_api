@@ -340,11 +340,14 @@ async def get_user_posts(
     """,
     deprecated = False,
 )
-def get_posts(
-        db: Annotated[Session, Depends(dependency = get_db)],
+async def get_posts(
+        db: Annotated[AsyncSession, Depends(dependency = get_db)],
     ) -> Sequence[Post]:
     
-    posts: Sequence[Post] = db.execute(statement = select(Post)).scalars().all()
+    result: Result[tuple[Post]] = await db.execute(
+        statement = select(Post).options(selectinload(Post.author)),
+    )
+    posts: Sequence[Post] = result.scalars().all()
     
     return posts
 
