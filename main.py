@@ -344,10 +344,10 @@ async def get_posts(
         db: Annotated[AsyncSession, Depends(dependency = get_db)],
     ) -> Sequence[Post]:
     
-    result: Result[tuple[Post]] = await db.execute(
+    query_post: Result[tuple[Post]] = await db.execute(
         statement = select(Post).options(selectinload(Post.author)),
     )
-    posts: Sequence[Post] = result.scalars().all()
+    posts: Sequence[Post] = query_post.scalars().all()
     
     return posts
 
@@ -363,12 +363,13 @@ async def get_posts(
     """,
     deprecated = False,
 )
-def create_post(
+async def create_post(
         post: PostCreate,
-        db: Annotated[Session, Depends(dependency = get_db)],
+        db: Annotated[AsyncSession, Depends(dependency = get_db)],
     ) -> Post:
     
-    user: User | None = db.execute(statement = select(User).where(User.id == post.user_id)).scalars().first()
+    query_user: Result[tuple[User]] = await db.execute(statement = select(User).where(User.id == post.user_id))
+    user: User | None = query_user.scalars().first()
     
     if not user:
         raise HTTPException(
@@ -383,8 +384,8 @@ def create_post(
     )
     
     db.add(instance = new_post)
-    db.commit()
-    db.refresh(instance = new_post)
+    await db.commit()
+    await db.refresh(instance = new_post)
     
     return new_post
 
@@ -399,12 +400,15 @@ def create_post(
     """,
     deprecated = False,
 )
-def get_post(
+async def get_post(
         post_id: int,
-        db: Annotated[Session, Depends(dependency = get_db)],
+        db: Annotated[AsyncSession, Depends(dependency = get_db)],
     ) -> Post:
     
-    post: Post | None = db.execute(statement = select(Post).where(Post.id == post_id)).scalars().first()
+    query_post: Result[tuple[Post]] = await db.execute(
+        statement = select(Post).options(selectinload(Post.author)).where(Post.id == post_id),
+    )
+    post: Post | None = query_post.scalars().first()
     
     if not post:
         raise HTTPException(
