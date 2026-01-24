@@ -476,13 +476,14 @@ async def update_post_full(
     """,
     deprecated = False,
 )
-def update_post_partial(
+async def update_post_partial(
         post_id: int,
         post_data: PostUpdate,
-        db: Annotated[Session, Depends(dependency = get_db)],
+        db: Annotated[AsyncSession, Depends(dependency = get_db)],
     ) -> Post:
     
-    post: Post | None = db.execute(statement = select(Post).where(Post.id == post_id)).scalars().first()
+    query_post: Result[tuple[Post]] = await db.execute(statement = select(Post).where(Post.id == post_id))
+    post: Post | None = query_post.scalars().first()
     
     if not post:
         raise HTTPException(
@@ -495,8 +496,8 @@ def update_post_partial(
     for field, value in update_data.items():
         setattr(post, field, value)
     
-    db.commit()
-    db.refresh(instance = post)
+    await db.commit()
+    await db.refresh(instance = post)
     
     return post
 
