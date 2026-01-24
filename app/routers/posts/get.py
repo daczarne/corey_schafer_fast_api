@@ -8,6 +8,7 @@ from sqlalchemy.orm import selectinload
 
 from app.database import get_db
 from app.models import Post
+from app.routers.posts.utils import query_post_by_post_id
 from app.schemas import PostResponse
 
 
@@ -49,10 +50,7 @@ async def get_post(
         db: Annotated[AsyncSession, Depends(dependency = get_db)],
     ) -> Post:
     
-    query_post: Result[tuple[Post]] = await db.execute(
-        statement = select(Post).options(selectinload(Post.author)).where(Post.id == post_id),
-    )
-    post: Post | None = query_post.scalars().first()
+    post: Post | None = await query_post_by_post_id(post_id = post_id, db = db)
     
     if not post:
         raise HTTPException(

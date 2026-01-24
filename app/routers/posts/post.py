@@ -1,11 +1,11 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import Result, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
 from app.models import Post, User
+from app.routers.posts.utils import query_user_by_user_id
 from app.schemas import PostCreate, PostResponse
 
 
@@ -27,8 +27,7 @@ async def create_post(
         db: Annotated[AsyncSession, Depends(dependency = get_db)],
     ) -> Post:
     
-    query_user: Result[tuple[User]] = await db.execute(statement = select(User).where(User.id == post.user_id))
-    user: User | None = query_user.scalars().first()
+    user: User | None = await query_user_by_user_id(user_id = post.user_id, db = db)
     
     if not user:
         raise HTTPException(

@@ -1,11 +1,11 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import Result, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
 from app.models import Post
+from app.routers.posts.utils import query_post_by_post_id
 
 
 router: APIRouter = APIRouter()
@@ -25,8 +25,7 @@ async def delete_post(
         db: Annotated[AsyncSession, Depends(dependency = get_db)],
     ) -> None:
     
-    query_post: Result[tuple[Post]] = await db.execute(statement = select(Post).where(Post.id == post_id))
-    post: Post | None = query_post.scalars().first()
+    post: Post | None = await query_post_by_post_id(post_id = post_id, db = db)
     
     if not post:
         raise HTTPException(
