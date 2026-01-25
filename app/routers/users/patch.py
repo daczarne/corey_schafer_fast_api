@@ -1,11 +1,11 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import Result, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
 from app.models import User
+from app.routers.users.utils import query_user_by_email, query_user_by_user_id, query_user_by_username
 from app.schemas import UserResponse, UserUpdate
 
 
@@ -27,8 +27,7 @@ async def update_user(
         db: Annotated[AsyncSession, Depends(dependency = get_db)],
     ) -> User:
     
-    query_user: Result[tuple[User]] = await db.execute(statement = select(User).where(User.id == user_id))
-    user: User | None = query_user.scalars().first()
+    user: User | None = await query_user_by_user_id(user_id = user_id, db = db)
     
     if not user:
         raise HTTPException(
@@ -37,10 +36,7 @@ async def update_user(
         )
     
     if user_update.username is not None and user_update.username != user.username:
-        query_existing_user: Result[tuple[User]] = await db.execute(
-            statement = select(User).where(User.username == user_update.username),
-        )
-        existing_user: User | None = query_existing_user.scalars().first()
+        existing_user: User | None = await query_user_by_username(username = user_update.username, db = db)
         
         if existing_user:
             raise HTTPException(
@@ -49,10 +45,7 @@ async def update_user(
             )
     
     if user_update.email is not None and user_update.email != user.email:
-        query_existing_email: Result[tuple[User]] = await db.execute(
-            statement = select(User).where(User.email == user_update.email),
-        )
-        existing_email: User | None = query_existing_email.scalars().first()
+        existing_email: User | None = await query_user_by_email(email = user_update.email, db = db)
         
         if existing_email:
             raise HTTPException(

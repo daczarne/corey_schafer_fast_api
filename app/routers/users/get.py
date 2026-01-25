@@ -2,12 +2,11 @@ from collections.abc import Sequence
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import Result, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
 
 from app.database import get_db
 from app.models import Post, User
+from app.routers.users.utils import query_posts_by_user_id, query_user_by_user_id
 from app.schemas import PostResponse, UserResponse
 
 
@@ -28,8 +27,7 @@ async def get_user(
         db: Annotated[AsyncSession, Depends(dependency = get_db)],
     ) -> User:
     
-    query_user: Result[tuple[User]] = await db.execute(statement = select(User).where(User.id == user_id))
-    user: User | None = query_user.scalars().first()
+    user: User | None = await query_user_by_user_id(user_id = user_id, db = db)
     
     if not user:
         raise HTTPException(
@@ -54,8 +52,7 @@ async def get_user_posts(
         db: Annotated[AsyncSession, Depends(dependency = get_db)],
     ) -> Sequence[Post]:
     
-    query_user: Result[tuple[User]] = await db.execute(statement = select(User).where(User.id == user_id))
-    user: User | None = query_user.scalars().first()
+    user: User | None = await query_user_by_user_id(user_id = user_id, db = db)
     
     if not user:
         raise HTTPException(
@@ -63,9 +60,6 @@ async def get_user_posts(
             detail = "User not found",
         )
     
-    query_posts: Result[tuple[Post]] = await db.execute(
-        statement = select(Post).options(selectinload(Post.author)).where(Post.user_id == user_id),
-    )
-    posts: Sequence[Post] = query_posts.scalars().all()
+    posts: Sequence[Post] = await query_posts_by_user_id(user_id = user_id, db = db)
     
     return posts

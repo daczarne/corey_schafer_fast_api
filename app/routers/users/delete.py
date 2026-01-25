@@ -1,11 +1,11 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import Result, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
 from app.models import User
+from app.routers.users.utils import query_user_by_user_id
 
 
 router: APIRouter = APIRouter()
@@ -25,8 +25,7 @@ async def delete_user(
         db: Annotated[AsyncSession, Depends(dependency = get_db)],
     ) -> None:
     
-    result: Result[tuple[User]] = await db.execute(statement = select(User).where(User.id == user_id))
-    user: User | None = result.scalars().first()
+    user: User | None = await query_user_by_user_id(user_id = user_id, db = db)
     
     if not user:
         raise HTTPException(

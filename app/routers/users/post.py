@@ -1,11 +1,11 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import Result, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
 from app.models import User
+from app.routers.users.utils import query_user_by_email, query_user_by_username
 from app.schemas import UserCreate, UserResponse
 
 
@@ -27,10 +27,7 @@ async def create_user(
         db: Annotated[AsyncSession, Depends(dependency = get_db)],
     ) -> User:
     
-    query_username: Result[tuple[User]] = await db.execute(
-        statement = select(User).where(User.username == user.username),
-    )
-    existing_username: User | None = query_username.scalars().first()
+    existing_username: User | None = await query_user_by_username(username = user.username, db = db)
     
     if existing_username:
         raise HTTPException(
@@ -38,10 +35,7 @@ async def create_user(
             detail = "Username already exists",
         )
     
-    query_email: Result[tuple[User]] = await db.execute(
-        statement = select(User).where(User.email == user.email),
-    )
-    existing_email: User | None = query_email.scalars().first()
+    existing_email: User | None = await query_user_by_email(email = user.email, db = db)
     
     if existing_email:
         raise HTTPException(
