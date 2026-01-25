@@ -8,7 +8,7 @@ from sqlalchemy.orm import selectinload
 
 from app.database import get_db
 from app.models import Post
-from app.routers.posts.utils import query_post_by_post_id
+from app.routers.utils import query_post_by_post_id
 from app.schemas import PostResponse
 
 
