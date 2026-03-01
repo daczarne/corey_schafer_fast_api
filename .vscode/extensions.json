@@ -5,6 +5,7 @@
         "davidanson.vscode-markdownlint",
         "editorconfig.editorconfig",
         "esbenp.prettier-vscode",
+        "fastapilabs.fastapi-vscode",
         "ms-python.python",
         "ms-python.vscode-pylance",
         "njpwerner.autodocstring",
@@ -12,7 +13,6 @@
         "streetsidesoftware.code-spell-checker",
         "tamasfe.even-better-toml",
         "yzhang.markdown-all-in-one",
-        "fastapilabs.fastapi-vscode",
     ],
     "unwantedRecommendations": [
         "ms-python.autopep8",
