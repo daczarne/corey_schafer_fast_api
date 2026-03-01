@@ -1,4 +1,4 @@
 {
     "python.defaultInterpreterPath": ".venv/bin/python",
-    // "fastapi.entryPoint": "app.main:app",
+    "fastapi.entryPoint": "app.main:app",
 }
