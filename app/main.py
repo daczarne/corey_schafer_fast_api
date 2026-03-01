@@ -15,8 +15,8 @@ from starlette.templating import _TemplateResponse
 
 from app.database import Base, engine, get_db
 from app.models import Post, User
-from app.routers.posts import router as posts_router
-from app.routers.users import router as users_router
+from app.routes.posts import router as posts_router
+from app.routes.users import router as users_router
 
 
 @asynccontextmanager

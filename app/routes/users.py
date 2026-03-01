@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
 from app.models import Post, User
-from app.routers.utils import query_posts_by_user_id, query_user_by_email, query_user_by_user_id, query_user_by_username
+from app.routes.utils import query_posts_by_user_id, query_user_by_email, query_user_by_user_id, query_user_by_username
 from app.schemas import PostResponse, UserCreate, UserResponse, UserUpdate
 
 
