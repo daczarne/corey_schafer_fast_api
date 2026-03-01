@@ -5,6 +5,7 @@ defaultdict
 docstrings
 dunder
 falsey
+fastapilabs
 FURB
 getcwdb
 listdir
