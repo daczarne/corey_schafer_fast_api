@@ -1,4 +1,4 @@
-# Corey Schafer's fastAPI tutorial
+# Corey Schafer's FastAPI tutorial
 
 This is a code-along repository for Corey Schafer's fastAPI tutorial series. The videos can be found in the following
 links:
