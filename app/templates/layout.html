@@ -253,13 +253,16 @@
 
         try {
           // POST to our API as JSON
-          const response = await fetch("/api/posts", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(postData),
-          });
+          const response = await fetch(
+            "/api/posts",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(postData),
+            }
+          );
 
           if (response.ok) {
             const data = await response.json();
@@ -286,10 +289,12 @@
         } catch (error) {
           document.getElementById("errorMessage").textContent =
             "Network error. Please check your connection and try again.";
+
           showModal("errorModal");
         }
       });
     </script>
+
     {% block scripts %}
     {% endblock scripts %}
 
