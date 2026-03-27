@@ -58,7 +58,7 @@ async def get_posts(
     ) -> Sequence[Post]:
     
     query_post: Result[tuple[Post]] = await db.execute(
-        statement = select(Post).options(selectinload(Post.author)),
+        statement = select(Post).options(selectinload(Post.author)).order_by(Post.date_posted.desc()),
     )
     posts: Sequence[Post] = query_post.scalars().all()
     

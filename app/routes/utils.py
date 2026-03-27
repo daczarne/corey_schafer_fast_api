@@ -16,7 +16,10 @@ async def query_post_by_post_id(
     ) -> Post | None:
     
     query: Result[tuple[Post]] = await db.execute(
-        statement = select(Post).options(selectinload(Post.author)).where(Post.id == post_id),
+        statement = select(Post)
+            .options(selectinload(Post.author))
+            .where(Post.id == post_id)
+            .order_by(Post.date_posted.desc()),
     )
     post: Post | None = query.scalars().first()
     
@@ -66,7 +69,10 @@ async def query_posts_by_user_id(
     ) -> Sequence[Post]:
     
     query: Result[tuple[Post]] = await db.execute(
-        statement = select(Post).options(selectinload(Post.author)).where(Post.user_id == user_id),
+        statement = select(Post)
+            .options(selectinload(Post.author))
+            .where(Post.user_id == user_id)
+            .order_by(Post.date_posted.desc()),
     )
     posts: Sequence[Post] = query.scalars().all()
     
