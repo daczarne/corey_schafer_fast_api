@@ -108,7 +108,7 @@ async def login_for_access_token(
     return Token(access_token = access_token, token_type = "bearer")
 
 
-@router.post(
+@router.get(
     path = "/me",
     response_model = UserPrivate,
     summary = "Validate user's token",
