@@ -127,6 +127,28 @@ async def user_posts_page(
     )
 
 
+@app.get(path = "/login", include_in_schema = False)
+async def login_page(request: Request) -> _TemplateResponse:
+    return templates.TemplateResponse(
+        request = request,
+        name = "login.html",
+        context = {
+            "title": "Login",
+        },
+    )
+
+
+@app.get(path = "/register", include_in_schema = False)
+async def register_page(request: Request) -> _TemplateResponse:
+    return templates.TemplateResponse(
+        request = request,
+        name = "register.html",
+        context = {
+            "title": "Register",
+        },
+    )
+
+
 #* ########## *#
 #* EXCEPTIONS *#
 #* ########## *#
