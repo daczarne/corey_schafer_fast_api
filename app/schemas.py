@@ -13,7 +13,7 @@ class UserCreate(UserBase):
 
 
 class UserPublic(BaseModel):
-    """To be user on routes that the public can see."""
+    """To be used on routes that the public can see."""
     
     model_config = ConfigDict(from_attributes = True)
     
