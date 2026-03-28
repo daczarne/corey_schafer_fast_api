@@ -26,6 +26,12 @@ links:
 - Authentication: who are you?
 - Authorization: what are you allowed to do?
 
+How to generate good secrete keys in the terminal?
+
+```shell
+python -c "import secrets; print(secrets.token_hex(32))"
+```
+
 [getting-started]: https://www.youtube.com/watch?v=7AMjmCTumuo
 [jinja2-templates]: https://www.youtube.com/watch?v=G4NIB9Rx9Qs
 [path-parameters]: https://www.youtube.com/watch?v=WRjXIA5pMtk

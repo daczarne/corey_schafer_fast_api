@@ -2,7 +2,7 @@ from collections.abc import Sequence
 from typing import Annotated
 
 from fastapi import Depends
-from sqlalchemy import Result, select
+from sqlalchemy import Result, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -43,7 +43,7 @@ async def query_user_by_username(
     ) -> User | None:
     
     query: Result[tuple[User]] = await db.execute(
-        statement = select(User).where(User.username == username),
+        statement = select(User).where(func.lower(User.username) == username.lower()),
     )
     user: User | None = query.scalars().first()
     
@@ -56,7 +56,7 @@ async def query_user_by_email(
     ) -> User | None:
     
     query: Result[tuple[User]] = await db.execute(
-        statement = select(User).where(User.email == email),
+        statement = select(User).where(func.lower(User.email) == email.lower()),
     )
     user: User | None = query.scalars().first()
     
