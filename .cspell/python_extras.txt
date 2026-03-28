@@ -13,6 +13,7 @@ metacharacter
 mkdirs
 nullable
 preexec
+pwdlib
 selectinload
 sessionmaker
 usefixtures
