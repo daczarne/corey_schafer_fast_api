@@ -111,8 +111,8 @@ async def login_for_access_token(
 @router.post(
     path = "/me",
     response_model = UserPrivate,
-    summary = "User private endpoint",
-    description = "User private endpoint",
+    summary = "Validate user's token",
+    description = "Validates a user's token.",
     deprecated = False,
 )
 async def get_current_user(
