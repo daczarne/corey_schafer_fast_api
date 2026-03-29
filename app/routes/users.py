@@ -119,7 +119,7 @@ async def get_current_user(
         token: Annotated[str, Depends(dependency = oauth2_scheme)],
         db: Annotated[AsyncSession, Depends(dependency = get_db)],
     ) -> User:
-    """Get the currently authenticated user."""
+    # Get the currently authenticated user.
     
     user_id: str | None = verify_access_token(token = token)
     
